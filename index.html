@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protocolo Doomsday — Checklist MCU</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060907; --panel:#0C120E; --panel2:#101A13; --line:#1E2C22;
+  --green:#3CE07E; --green-dim:#1E6B41; --green-glow:rgba(60,224,126,.16);
+  --gold:#D9B44A; --gold-dim:#6B5A25;
+  --silver:#C9D2CD; --muted:#76867C; --faint:#4A574F;
+  --danger:#E0533C;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg); color:var(--silver);
+  font-family:'Archivo',system-ui,sans-serif;
+  background-image:
+    radial-gradient(ellipse 70% 40% at 50% -5%, rgba(60,224,126,.07), transparent 60%),
+    repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.006) 3px 4px);
+  min-height:100vh; padding-bottom:80px;
+}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+
+/* ===== HEADER ===== */
+header{padding:44px 0 22px;text-align:center;position:relative}
+.eyebrow{
+  font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--green);
+  display:inline-flex;align-items:center;gap:12px;margin-bottom:14px;font-weight:600;
+}
+.eyebrow::before,.eyebrow::after{content:"";width:34px;height:1px;background:linear-gradient(90deg,transparent,var(--green-dim))}
+.eyebrow::after{background:linear-gradient(90deg,var(--green-dim),transparent)}
+h1{
+  font-family:'Anton',sans-serif;font-size:clamp(42px,8vw,76px);line-height:.95;
+  text-transform:uppercase;letter-spacing:.02em;color:#EAF2ED;
+}
+h1 .doom{
+  display:block;color:transparent;
+  -webkit-text-stroke:1.5px var(--green);
+  text-shadow:0 0 34px var(--green-glow);
+}
+.sub{color:var(--muted);font-size:14px;margin-top:12px;max-width:560px;margin-inline:auto}
+
+/* ===== COUNTDOWN ===== */
+.plate{
+  margin:28px auto 0;max-width:560px;
+  border:1px solid var(--line);background:linear-gradient(180deg,var(--panel2),var(--panel));
+  border-radius:4px;padding:18px 22px;position:relative;overflow:hidden;
+  box-shadow:0 0 0 1px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.04);
+}
+.plate::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent 40%,rgba(60,224,126,.06) 50%,transparent 60%);
+  animation:scan 5s linear infinite;
+}
+@keyframes scan{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+@media (prefers-reduced-motion: reduce){.plate::after{animation:none}}
+.plate .lbl{font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--muted)}
+.count{display:flex;justify-content:center;gap:26px;margin-top:10px}
+.count div{text-align:center}
+.count b{font-family:'Anton',sans-serif;font-size:38px;color:var(--green);display:block;line-height:1;text-shadow:0 0 22px var(--green-glow)}
+.count span{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint)}
+.plate .date{margin-top:10px;font-size:12px;color:var(--muted);letter-spacing:.08em}
+
+/* ===== PROGRESS ===== */
+.progress{
+  position:sticky;top:0;z-index:50;background:rgba(6,9,7,.92);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);padding:12px 0;margin-top:32px;
+}
+.pgrid{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.bar{flex:1;min-width:180px;height:8px;background:var(--panel2);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--green-dim),var(--green));transition:width .5s ease;border-radius:99px}
+.pct{font-family:'Anton',sans-serif;font-size:22px;color:var(--green);min-width:64px}
+.mini{display:flex;gap:14px;font-size:11px;color:var(--muted);letter-spacing:.04em;flex-wrap:wrap}
+.mini b{color:var(--silver)}
+.dotE,.dotR,.dotO{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;transform:rotate(45deg)}
+.dotE{background:var(--green)} .dotR{background:var(--gold)} .dotO{background:var(--faint)}
+
+/* ===== PACE (plano de maratona) ===== */
+.pace{
+  margin-top:18px;border:1px solid var(--line);border-radius:4px;
+  background:linear-gradient(180deg,var(--panel2),var(--panel));
+  padding:14px 18px;display:flex;gap:22px;flex-wrap:wrap;align-items:center;justify-content:center;
+}
+.pace .pc{text-align:center;min-width:120px}
+.pace .pc b{font-family:'Anton',sans-serif;font-size:22px;color:#E4EDE7;display:block;line-height:1.1}
+.pace .pc b.g{color:var(--green)} .pace .pc b.a{color:var(--gold)}
+.pace .pc span{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
+.pace .done-msg{font-size:13px;color:var(--green);font-weight:600}
+
+/* ===== SEARCH ===== */
+.searchbox{position:relative;margin:22px 0 4px}
+.searchbox input{
+  width:100%;padding:13px 44px 13px 44px;border-radius:3px;
+  border:1px solid var(--line);background:var(--panel);color:#E4EDE7;
+  font-family:'Archivo';font-size:14px;transition:border-color .2s, box-shadow .2s;
+}
+.searchbox input::placeholder{color:var(--faint)}
+.searchbox input:focus{outline:none;border-color:var(--green-dim);box-shadow:0 0 0 3px rgba(60,224,126,.08)}
+.searchbox .ico{
+  position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  width:16px;height:16px;color:var(--faint);pointer-events:none;
+}
+.searchbox .clear{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:var(--faint);cursor:pointer;
+  font-size:16px;padding:6px 10px;display:none;line-height:1;
+}
+.searchbox .clear:hover{color:var(--silver)}
+.searchbox.has .clear{display:block}
+.noresult{
+  text-align:center;color:var(--muted);font-size:13px;padding:40px 0;
+  border:1px dashed var(--line);border-radius:4px;margin-top:24px;
+}
+.noresult b{color:var(--green)}
+
+/* ===== FILTERS & TOOLS ===== */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0}
+.chip{
+  font-family:'Archivo';font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  padding:8px 14px;border-radius:3px;border:1px solid var(--line);background:var(--panel);
+  color:var(--muted);cursor:pointer;transition:all .18s;
+}
+.chip:hover{border-color:var(--green-dim);color:var(--silver)}
+.chip.on{background:var(--green);border-color:var(--green);color:#04120A}
+.chip.on.gold{background:var(--gold);border-color:var(--gold)}
+.chip.on.gray{background:var(--faint);border-color:var(--faint);color:#EAF2ED}
+.chip:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.toolrow{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 6px;align-items:center}
+.toolrow .sep{width:1px;height:20px;background:var(--line);margin:0 4px}
+.tbtn{
+  font-family:'Archivo';font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  padding:7px 12px;border-radius:3px;border:1px solid var(--line);background:transparent;
+  color:var(--faint);cursor:pointer;transition:all .18s;
+}
+.tbtn:hover{border-color:var(--green-dim);color:var(--green)}
+.tbtn.on{border-color:var(--green);color:var(--green);background:rgba(60,224,126,.07)}
+.controw{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 0}
+.contchip{
+  font-size:11px;font-weight:600;padding:7px 12px;border-radius:3px;cursor:pointer;
+  border:1px solid var(--gold-dim);background:rgba(217,180,74,.06);color:var(--gold);
+  display:inline-flex;align-items:center;gap:7px;transition:all .18s;
+}
+.contchip:hover{background:rgba(217,180,74,.14)}
+.contchip .pulse{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:pulse 1.6s ease infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+@media (prefers-reduced-motion: reduce){.contchip .pulse{animation:none}}
+
+/* ===== SECTIONS & ITEMS ===== */
+.era{margin-top:34px}
+.era h2{
+  font-family:'Anton',sans-serif;font-size:20px;letter-spacing:.06em;text-transform:uppercase;
+  color:#DFE9E3;display:flex;align-items:baseline;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--line);
+}
+.era h2 small{font-family:'Archivo';font-size:11px;font-weight:500;color:var(--faint);letter-spacing:.14em}
+.row{border-bottom:1px solid rgba(30,44,34,.55)}
+.item{
+  display:flex;align-items:center;gap:12px;padding:12px 12px;
+  cursor:pointer;transition:background .15s;border-left:2px solid transparent;user-select:none;
+}
+.item:hover{background:rgba(60,224,126,.035)}
+.item.prE{border-left-color:var(--green)}
+.item.prR{border-left-color:var(--gold)}
+.item.prO{border-left-color:transparent}
+.item.locked{cursor:not-allowed;opacity:.55}
+.item.locked:hover{background:rgba(224,83,60,.03)}
+.box{
+  flex:none;width:22px;height:22px;border:1.5px solid var(--faint);border-radius:3px;position:relative;
+  transform:rotate(45deg);transition:all .2s;background:var(--panel);
+}
+.item.done .box{border-color:var(--green);background:var(--green);box-shadow:0 0 14px var(--green-glow)}
+.item.done .box::after{
+  content:"";position:absolute;inset:0;display:block;
+  background:no-repeat center/12px url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%2304120A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>');
+  transform:rotate(-45deg);
+}
+.lockico{flex:none;width:22px;text-align:center;font-size:14px;color:var(--faint)}
+.meta{flex:1;min-width:0}
+.meta .t{font-weight:600;font-size:14.5px;color:#E4EDE7;transition:color .2s}
+.item.done .t{color:var(--faint);text-decoration:line-through;text-decoration-color:var(--green-dim)}
+.meta .d{font-size:11.5px;color:var(--muted);margin-top:2px;letter-spacing:.02em}
+.item.done .d{color:var(--faint)}
+.wbadge{
+  display:inline-flex;align-items:center;gap:5px;margin-left:8px;
+  font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);
+}
+.wbadge i{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 1.6s ease infinite;display:inline-block}
+.lbadge{
+  display:inline-block;margin-left:8px;font-size:9px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--danger);border:1px solid rgba(224,83,60,.4);
+  border-radius:2px;padding:2px 6px;
+}
+.tag{
+  flex:none;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  padding:4px 8px;border-radius:2px;border:1px solid;
+}
+.tag.E{color:var(--green);border-color:var(--green-dim);background:rgba(60,224,126,.08)}
+.tag.R{color:var(--gold);border-color:var(--gold-dim);background:rgba(217,180,74,.07)}
+.tag.O{color:var(--muted);border-color:var(--line);background:transparent}
+.info{
+  flex:none;width:26px;height:26px;border-radius:50%;border:1px solid var(--line);
+  background:var(--panel);color:var(--muted);cursor:pointer;
+  font-family:Georgia,serif;font-style:italic;font-size:13px;line-height:1;
+  display:flex;align-items:center;justify-content:center;transition:all .18s;position:relative;
+}
+.info:hover{border-color:var(--green-dim);color:var(--green)}
+.info.hasnote::after{
+  content:"";position:absolute;top:-2px;right:-2px;width:8px;height:8px;border-radius:50%;
+  background:var(--gold);border:1.5px solid var(--bg);
+}
+.row.open .info{background:var(--green);border-color:var(--green);color:#04120A}
+.info:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.syn{display:none;padding:0 12px 16px 48px;font-size:12.5px;line-height:1.65;color:var(--muted)}
+.syn p{max-width:640px;border-left:2px solid var(--line);padding-left:14px}
+.syn b.h{color:var(--green);font-size:9px;letter-spacing:.22em;text-transform:uppercase;display:block;margin-bottom:4px}
+.row.open .syn{display:block;animation:fadein .25s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.row.open .syn{animation:none}}
+mark{background:rgba(60,224,126,.25);color:#EAF2ED;border-radius:2px;padding:0 1px}
+
+/* ===== AVALIAÇÃO / NOTA / ASSISTINDO ===== */
+.score{
+  flex:none;min-width:30px;text-align:center;font-family:'Anton',sans-serif;font-size:13px;
+  padding:4px 7px;border-radius:3px;border:1px solid var(--line);color:var(--faint);letter-spacing:.04em;
+}
+.score.hi{color:var(--green);border-color:var(--green-dim);background:rgba(60,224,126,.08);text-shadow:0 0 12px var(--green-glow)}
+.score.mid{color:var(--gold);border-color:var(--gold-dim);background:rgba(217,180,74,.07)}
+.score.lo{color:var(--danger);border-color:rgba(224,83,60,.4);background:rgba(224,83,60,.07)}
+.rate{max-width:640px;border-left:2px solid var(--line);padding-left:14px;margin-top:12px}
+.rate b.h{color:var(--gold);font-size:9px;letter-spacing:.22em;text-transform:uppercase;display:block;margin-bottom:8px}
+.rpills{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.rpill{
+  width:30px;height:30px;border-radius:3px;border:1px solid var(--line);background:var(--panel);
+  color:var(--muted);font-family:'Anton',sans-serif;font-size:13px;cursor:pointer;transition:all .15s;
+  transform:rotate(45deg);display:flex;align-items:center;justify-content:center;
+}
+.rpill span{transform:rotate(-45deg)}
+.rpill:hover{border-color:var(--green-dim);color:var(--silver)}
+.rpill.sel{background:var(--green);border-color:var(--green);color:#04120A;box-shadow:0 0 14px var(--green-glow)}
+.rpill:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.runrate{
+  margin-left:8px;background:none;border:none;color:var(--faint);cursor:pointer;
+  font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-family:'Archivo';
+}
+.runrate:hover{color:var(--danger)}
+.notes{max-width:640px;border-left:2px solid var(--line);padding-left:14px;margin-top:12px}
+.notes b.h{color:var(--silver);font-size:9px;letter-spacing:.22em;text-transform:uppercase;display:block;margin-bottom:6px}
+.notes textarea{
+  width:100%;min-height:52px;resize:vertical;background:var(--panel);border:1px solid var(--line);
+  border-radius:3px;color:#E4EDE7;font-family:'Archivo';font-size:12.5px;padding:9px 11px;line-height:1.5;
+}
+.notes textarea:focus{outline:none;border-color:var(--green-dim)}
+.notes textarea::placeholder{color:var(--faint)}
+.watchbtn{
+  margin-top:12px;margin-left:16px;
+  font-family:'Archivo';font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:8px 14px;border-radius:3px;border:1px solid var(--gold-dim);background:transparent;
+  color:var(--gold);cursor:pointer;transition:all .18s;
+}
+.watchbtn:hover{background:rgba(217,180,74,.1)}
+.watchbtn.on{background:var(--gold);color:#171200;border-color:var(--gold)}
+
+/* ===== CONQUISTAS ===== */
+.achs{margin-top:44px}
+.achs h2{
+  font-family:'Anton',sans-serif;font-size:20px;letter-spacing:.06em;text-transform:uppercase;
+  color:#DFE9E3;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:16px;
+  display:flex;align-items:baseline;gap:12px;
+}
+.achs h2 small{font-family:'Archivo';font-size:11px;font-weight:500;color:var(--faint);letter-spacing:.14em}
+.achgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.ach{
+  border:1px solid var(--line);border-radius:4px;background:var(--panel);
+  padding:14px;display:flex;gap:12px;align-items:flex-start;transition:all .2s;
+}
+.ach .medal{
+  flex:none;width:38px;height:38px;border-radius:3px;transform:rotate(45deg);
+  border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;
+  background:var(--panel2);margin:4px 6px 0 2px;
+}
+.ach .medal span{transform:rotate(-45deg);font-size:16px;filter:grayscale(1);opacity:.4}
+.ach.won{border-color:var(--green-dim);background:linear-gradient(180deg,rgba(60,224,126,.05),var(--panel))}
+.ach.won .medal{border-color:var(--green);background:rgba(60,224,126,.1);box-shadow:0 0 16px var(--green-glow)}
+.ach.won .medal span{filter:none;opacity:1}
+.ach .at{font-size:12.5px;font-weight:700;color:var(--silver);letter-spacing:.02em}
+.ach.won .at{color:var(--green)}
+.ach .ad{font-size:10.5px;color:var(--faint);margin-top:3px;line-height:1.5}
+.ach .ap{font-size:9.5px;color:var(--muted);margin-top:5px;letter-spacing:.06em}
+
+/* ===== VEREDICTO ===== */
+.verdict{
+  margin-top:44px;border:1px solid var(--line);border-radius:4px;text-align:center;
+  padding:28px 20px;background:linear-gradient(180deg,var(--panel2),var(--panel));
+}
+.verdict .lbl{font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--muted)}
+.vnum{
+  font-family:'Anton',sans-serif;font-size:clamp(48px,9vw,72px);line-height:1;margin:12px 0 6px;
+  color:var(--faint);transition:color .3s, text-shadow .3s;
+}
+.vnum.hi{color:var(--green);text-shadow:0 0 30px var(--green-glow)}
+.vnum.mid{color:var(--gold);text-shadow:0 0 24px rgba(217,180,74,.2)}
+.vnum.lo{color:var(--danger);text-shadow:0 0 24px rgba(224,83,60,.18)}
+.vphrase{font-size:14px;color:var(--silver);font-weight:600;letter-spacing:.02em}
+.vdetail{font-size:11.5px;color:var(--muted);margin-top:6px;letter-spacing:.04em}
+.erastats{margin-top:20px;text-align:left;max-width:560px;margin-inline:auto}
+.erastats .eh{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--faint);text-align:center;margin-bottom:10px}
+.erow{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:11.5px}
+.erow .en{flex:1;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.erow .ebar{flex:1.2;height:6px;background:var(--panel2);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.erow .ebar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--green-dim),var(--green))}
+.erow .ebar i.mid{background:linear-gradient(90deg,var(--gold-dim),var(--gold))}
+.erow .ebar i.lo{background:linear-gradient(90deg,#7A2E22,var(--danger))}
+.erow .ev{width:34px;text-align:right;font-family:'Anton',sans-serif;font-size:13px;color:var(--silver)}
+.sharebtn{
+  margin-top:22px;font-family:'Archivo';font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  padding:11px 22px;border-radius:3px;border:1px solid var(--green-dim);background:rgba(60,224,126,.07);
+  color:var(--green);cursor:pointer;transition:all .2s;
+}
+.sharebtn:hover{background:var(--green);color:#04120A}
+
+/* ===== FINALE / RESET / TOAST ===== */
+.finale{
+  margin-top:44px;border:1px solid var(--green-dim);border-radius:4px;text-align:center;
+  padding:30px 20px;background:
+    radial-gradient(ellipse 60% 100% at 50% 0%, rgba(60,224,126,.09), transparent 70%),var(--panel);
+}
+.finale .lbl{font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--green)}
+.finale h3{font-family:'Anton',sans-serif;font-size:clamp(26px,5vw,40px);text-transform:uppercase;color:#EAF2ED;margin:8px 0 4px}
+.finale p{font-size:13px;color:var(--muted)}
+.reset{margin-top:36px;text-align:center;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.reset button{
+  font-family:'Archivo';font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  background:none;border:1px solid var(--line);color:var(--faint);padding:9px 18px;border-radius:3px;cursor:pointer;transition:all .2s;
+}
+.reset button:hover{border-color:var(--green-dim);color:var(--green)}
+.reset button.danger:hover{border-color:var(--danger);color:var(--danger)}
+.toast{
+  position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--panel2);border:1px solid var(--green-dim);color:var(--green);
+  font-size:12px;letter-spacing:.06em;padding:10px 18px;border-radius:3px;transition:transform .3s;z-index:99;text-align:center;
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.hidden{display:none}
+@media(max-width:560px){
+  .count{gap:16px}.count b{font-size:30px}
+  .tag{display:none}
+  .item{padding:12px 6px}
+  .syn{padding-left:12px}
+  .pace{gap:14px}
+}
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <div class="eyebrow">Decreto de Latvéria · Protocolo de Maratona</div>
+  <h1>Vingadores<span class="doom">Doomsday</span></h1>
+  <p class="sub">Checklist cronológico do MCU — marque o que já assistiu e chegue pronto ao cinema. Losango <b style="color:var(--green)">verde</b> = essencial · <b style="color:var(--gold)">dourado</b> = recomendado · cinza = opcional. Toque no <b style="color:var(--green)">ⓘ</b> para sinopse, nota, anotações e "assistindo agora".</p>
+  <div class="plate">
+    <div class="lbl">Contagem regressiva para o Dia do Destino</div>
+    <div class="count">
+      <div><b id="cd-d">—</b><span>dias</span></div>
+      <div><b id="cd-h">—</b><span>horas</span></div>
+      <div><b id="cd-m">—</b><span>min</span></div>
+    </div>
+    <div class="date">Estreia no Brasil · 17 de dezembro de 2026</div>
+  </div>
+</header>
+
+<div class="progress"><div class="wrap pgrid">
+  <span class="pct" id="pct">0%</span>
+  <div class="bar"><i id="fill"></i></div>
+  <div class="mini">
+    <span><i class="dotE"></i>Essencial <b id="cE">0/0</b></span>
+    <span><i class="dotR"></i>Recom. <b id="cR">0/0</b></span>
+    <span><i class="dotO"></i>Opcional <b id="cO">0/0</b></span>
+    <span>◆ Média <b id="cAvg">—</b></span>
+  </div>
+</div></div>
+
+<main class="wrap">
+
+  <div class="pace" id="pace"></div>
+
+  <div class="searchbox" id="sbox">
+    <svg class="ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="search" id="search" placeholder="Buscar por título... (ex.: Loki, Demolidor, X-Men)" autocomplete="off" aria-label="Buscar por título">
+    <button class="clear" id="clear" aria-label="Limpar busca">✕</button>
+  </div>
+
+  <div class="filters" role="group" aria-label="Filtro de prioridade">
+    <button class="chip on" data-f="all">Tudo</button>
+    <button class="chip" data-f="E">Essencial</button>
+    <button class="chip gold" data-f="R">Recomendado</button>
+    <button class="chip gray" data-f="O">Opcional</button>
+    <button class="chip" data-f="todo">Falta assistir</button>
+  </div>
+
+  <div class="toolrow">
+    <button class="tbtn" id="orderbtn" title="Alternar entre ordem cronológica e ordem de lançamento">⇅ Ordem: Cronológica</button>
+    <span class="sep"></span>
+    <button class="tbtn pfb on" data-pf="all">Todas plataformas</button>
+    <button class="tbtn pfb" data-pf="D">Disney+</button>
+    <button class="tbtn pfb" data-pf="N">Netflix</button>
+    <button class="tbtn pfb" data-pf="C">Cinemas</button>
+    <span class="sep"></span>
+    <button class="tbtn" id="exportbtn" title="Baixar backup do progresso">⬇ Exportar</button>
+    <button class="tbtn" id="importbtn" title="Restaurar backup">⬆ Importar</button>
+    <input type="file" id="importfile" accept=".json,application/json" class="hidden">
+  </div>
+
+  <div class="controw" id="controw"></div>
+
+  <div id="list"></div>
+  <div class="noresult hidden" id="noresult">Nenhum título encontrado para "<b id="nq"></b>".<br>Confira a grafia ou tente uma parte do nome (ex.: "vingadores").</div>
+
+  <div class="achs">
+    <h2>Conquistas <small id="achcount"></small></h2>
+    <div class="achgrid" id="achgrid"></div>
+  </div>
+
+  <div class="verdict" id="verdict">
+    <div class="lbl">Veredicto da maratona</div>
+    <div class="vnum" id="vnum">—</div>
+    <div class="vphrase" id="vphrase">Avalie os títulos pelo botão ⓘ para descobrir o quanto você está gostando do MCU.</div>
+    <div class="vdetail" id="vdetail"></div>
+    <div class="erastats" id="erastats"></div>
+    <button class="sharebtn" id="sharebtn">📋 Copiar resumo para compartilhar</button>
+  </div>
+
+  <div class="finale">
+    <div class="lbl">O evento</div>
+    <h3>Vingadores: Doutor Destino</h3>
+    <p>17/12/2026 · Cinemas · Dir. irmãos Russo · Robert Downey Jr. como Victor von Doom</p>
+  </div>
+
+  <div class="reset">
+    <button id="reset" class="danger">Zerar progresso</button>
+  </div>
+</main>
+
+<div class="toast" id="toast">Progresso salvo</div>
+
+<script>
+// [id, título, detalhes, prioridade, sinopse, minutos, chaveLançamento(aaaamm), plataforma(D/N/C), estreiaFutura(ISO opcional)]
+const DATA = [
+{g:"Origens · 1942–1995",items:[
+["cap1","Capitão América: O Primeiro Vingador","Filme · 1943–45 · 124 min · Disney+","R","Na 2ª Guerra Mundial, o franzino Steve Rogers recebe o soro do supersoldado e enfrenta a Hydra e o Caveira Vermelha — até cair no gelo com o Tesseract.",124,201107,"D"],
+["olhos","Olhos de Wakanda","Animação · Antiguidade–1896 · 4 ep · Disney+","O","Antologia animada sobre os Cães de Guerra, guerreiros wakandanos enviados através dos séculos para recuperar artefatos de vibranium roubados.",100,202508,"D"],
+["agcarter","Agente Carter (One-Shot)","Curta · 1946 · 15 min","O","No pós-guerra, Peggy Carter prova seu valor em uma missão solo da SSR — o embrião da fundação da S.H.I.E.L.D.",15,201309,"D"],
+["cmarvel","Capitã Marvel","Filme · 1995 · 123 min · Disney+","O","Nos anos 90, Carol Danvers recupera memórias de sua vida na Terra e descobre o alcance de seus poderes cósmicos em meio à guerra entre Kree e Skrulls.",123,201903,"D"]]},
+{g:"Fase 1 · A era dos heróis",items:[
+["im1","Homem de Ferro","Filme · 2010 · 126 min · Disney+","O","Sequestrado por terroristas, o magnata das armas Tony Stark constrói uma armadura para escapar — e decide virar algo maior: o Homem de Ferro.",126,200805,"D"],
+["im2","Homem de Ferro 2","Filme · 2011 · 124 min · Disney+","O","Tony lida com o legado do pai, a pressão do governo pela sua tecnologia e o vingativo Ivan Vanko (Whiplash). Estreia da Viúva Negra.",124,201005,"D"],
+["hulk","O Incrível Hulk","Filme · 2011 · 112 min · Disney+","O","Bruce Banner foge do general Ross enquanto busca uma cura para o monstro que carrega — até precisar dele para deter o Abominável.",112,200806,"D"],
+["thor1","Thor","Filme · 2011 · 115 min · Disney+","O","Banido de Asgard por arrogância, Thor cai na Terra sem poderes e precisa reaprender a ser digno do Mjölnir — enquanto Loki trama no trono.",115,201105,"D"],
+["aveng1","Os Vingadores","Filme · 2012 · 143 min · Disney+ · Loki e o Tesseract","R","Loki rouba o Tesseract e abre um portal alienígena sobre Nova York. Os heróis se unem pela primeira vez — e a fuga de uma variante de Loki nesse dia origina a série que cria o multiverso.",143,201205,"D"]]},
+{g:"Fase 2",items:[
+["thor2","Thor: O Mundo Sombrio","Filme · 2013 · 112 min · Disney+","O","Thor enfrenta os Elfos Negros e o Éter (a Joia da Realidade) ao lado de Jane Foster — e de um Loki prisioneiro cheio de segundas intenções.",112,201311,"D"],
+["im3","Homem de Ferro 3","Filme · 2012–13 · 130 min · Disney+","O","Abalado após a batalha de Nova York, Tony enfrenta crises de ansiedade, o misterioso Mandarim e a vida sem depender da armadura.",130,201305,"D"],
+["cap2","Capitão América: O Soldado Invernal","Filme · 2014 · 136 min · Disney+ · Bucky e Sam","R","Steve descobre que a Hydra infiltrou a S.H.I.E.L.D. por dentro — e que o assassino Soldado Invernal é seu amigo Bucky. Estreia de Sam Wilson, o Falcão.",136,201404,"D"],
+["gotg1","Guardiões da Galáxia","Filme · 2014 · 121 min · Disney+","O","O ladrão espacial Peter Quill e um bando de foras-da-lei se unem para impedir que Ronan use a Joia do Poder para destruir um planeta.",121,201408,"D"],
+["gotg2","Guardiões da Galáxia Vol. 2","Filme · 2014 · 136 min · Disney+","O","Os Guardiões encontram Ego, o pai celestial de Quill — e descobrem que família é o que se escolhe, não o que se herda.",136,201705,"D"],
+["groot","Eu Sou Groot (T1+T2)","Curtas · 2014 · 10 ep · Disney+","O","Curtas animados com as travessuras do bebê Groot pela galáxia entre as aventuras dos Guardiões.",30,202208,"D"],
+["ultron","Vingadores: Era de Ultron","Filme · 2015 · 141 min · Disney+ · Visão e Wanda","R","Uma IA criada por Tony decide que a paz exige exterminar a humanidade. Nascem o Visão, Wanda e Pietro Maximoff — peças-chave de WandaVision e VisionQuest.",141,201505,"D"],
+["ant1","Homem-Formiga","Filme · 2015 · 117 min · Disney+ · Scott Lang","R","O ladrão Scott Lang veste o traje encolhedor de Hank Pym para impedir que a tecnologia Pym caia em mãos erradas. Origem do herói que está em Doomsday.",117,201507,"D"]]},
+{g:"Defensores · Séries Netflix (cânone)",items:[
+["dd","Demolidor (T1–T3)","Série · 2015–18 · 39 ep · Disney+ · base de Renascido","R","O advogado cego Matt Murdock combate o crime no Hell's Kitchen como Demolidor, em guerra pessoal contra Wilson Fisk, o Rei do Crime. Base direta de Demolidor: Renascido.",1950,201504,"D"],
+["jj","Jessica Jones (T1–T3)","Série · 2015–19 · Disney+","O","Detetive particular com superforça e passado traumático, Jessica enfrenta Kilgrave, um homem capaz de controlar mentes com a voz.",1950,201511,"D"],
+["lc","Luke Cage (T1–T2)","Série · 2016–18 · Disney+","O","Com pele à prova de balas, Luke Cage vira o protetor relutante do Harlem contra o crime organizado local.",1300,201609,"D"],
+["if","Punho de Ferro (T1–T2)","Série · 2017–18 · Disney+","O","Danny Rand retorna da cidade mística de K'un-Lun com o poder do Punho de Ferro para retomar a empresa da família e enfrentar o Tentáculo.",1150,201703,"D"],
+["def","Os Defensores","Minissérie · 2017 · 8 ep · Disney+","O","Demolidor, Jessica Jones, Luke Cage e Punho de Ferro se unem a contragosto para derrubar a organização Tentáculo em Nova York.",400,201708,"D"],
+["pun","O Justiceiro (T1–T2)","Série · 2017–19 · Disney+","O","Frank Castle caça implacavelmente os responsáveis pela morte de sua família — e descobre uma conspiração militar mais funda.",1430,201711,"D"]]},
+{g:"Fase 3 · Rumo ao infinito",items:[
+["civil","Capitão América: Guerra Civil","Filme · 2016 · 147 min · Disney+","R","O Acordo de Sokóvia racha os Vingadores ao meio: Tony contra Steve, com o Barão Zemo manipulando tudo nos bastidores. Estreias de Pantera Negra e Homem-Aranha no MCU.",147,201605,"D"],
+["bw","Viúva Negra","Filme · 2016 · 134 min · Disney+ · Yelena e Guardião Vermelho","R","Foragida após Guerra Civil, Natasha reencontra sua 'família' russa — Yelena, Melina e o Guardião Vermelho — para derrubar a Sala Vermelha. Origem de dois nomes do elenco de Doomsday.",134,202107,"D"],
+["bp1","Pantera Negra","Filme · 2016 · 134 min · Disney+ · Shuri e M'Baku","R","T'Challa assume o trono de Wakanda e enfrenta Killmonger, que quer usar o vibranium para uma revolução global. Estreias de Shuri e M'Baku.",134,201802,"D"],
+["sp1","Homem-Aranha: De Volta ao Lar","Filme · 2016 · 133 min · Netflix","O","Peter Parker equilibra o colégio e a vida de herói de bairro enquanto enfrenta o Abutre, sob a mentoria (e vigilância) de Tony Stark.",133,201707,"N"],
+["dstr","Doutor Estranho","Filme · 2016–17 · 115 min · Disney+","R","O cirurgião arrogante Stephen Strange perde o uso das mãos e encontra as artes místicas em Kamar-Taj — a introdução da magia e das dimensões no MCU.",115,201611,"D"],
+["ragna","Thor: Ragnarok","Filme · 2017 · 130 min · Disney+","O","Preso no planeta-lixão Sakaar, Thor precisa escapar com Hulk e Loki para impedir que sua irmã Hela consuma Asgard.",130,201711,"D"],
+["ant2","Homem-Formiga e a Vespa","Filme · 2018 · 118 min · Disney+ · Ghost","O","Scott, Hope e Hank tentam resgatar Janet do Reino Quântico enquanto são caçados pela intangível Ghost — que reaparece em Thunderbolts* e Doomsday.",118,201807,"D"],
+["iw","Vingadores: Guerra Infinita","Filme · 2018 · 149 min · Disney+","E","Thanos cruza o universo reunindo as seis Joias do Infinito. Pela primeira vez, os heróis perdem — e metade de toda a vida vira pó.",149,201804,"D"],
+["endgame","Vingadores: Ultimato","Filme · 2018/2023 · 181 min · Disney+ · origem da variante de Loki","E","Cinco anos após o estalo, os Vingadores executam o 'assalto no tempo' para desfazer Thanos. O desfecho da Saga do Infinito — e o acidente que solta a variante de Loki no multiverso.",181,201904,"D"]]},
+{g:"Fase 4 · O multiverso desperta",items:[
+["loki","Loki (T1+T2)","Série · AVT, fora do tempo · 12 ep · Disney+ · lista oficial da Disney","E","Capturado pela AVT após escapar em 2012, Loki descobre quem realmente controla o tempo. A série que cria o multiverso, a TVA e as regras de toda a Saga atual — a peça nº 1 para Doomsday.",600,202106,"D"],
+["whatif","What If...? (T1–T3)","Animação · Multiverso · Disney+","R","O Vigia narra realidades alternativas: e se momentos-chave do MCU tivessem acontecido de outro jeito? Um tour guiado pelos conceitos do multiverso.",810,202108,"D"],
+["zombies","Marvel Zombies","Animação · 2025 · 4 ep · Disney+","O","Em um universo alternativo devastado, heróis transformados em mortos-vivos caçam os poucos sobreviventes.",120,202509,"D"],
+["wanda","WandaVision","Série · 2023 · 9 ep · Disney+","R","Presa numa sitcom idílica em Westview, Wanda esconde um luto devastador. A origem da Feiticeira Escarlate — e o ponto de partida da trilogia que termina em VisionQuest.",360,202101,"D"],
+["shang","Shang-Chi e a Lenda dos Dez Anéis","Filme · 2023 · 132 min · Disney+ · lista oficial da Disney","E","Shang-Chi confronta o pai, Wenwu, líder milenar da organização dos Dez Anéis, e abraça seu destino na vila mística de Ta Lo. Shang-Chi está confirmado em Doomsday.",132,202109,"D"],
+["falcao","Falcão e o Soldado Invernal","Série · 2024 · 6 ep · Disney+ · Agente Americano e Torres","R","Sam Wilson hesita em assumir o escudo enquanto enfrenta os Apátridas e vê o governo entregar o título a John Walker — o futuro Agente Americano. Estreia de Joaquín Torres.",300,202103,"D"],
+["sp2","Homem-Aranha: Longe de Casa","Filme · 2024 · 129 min · Netflix/Prime","O","Em excursão pela Europa, Peter enfrenta as ilusões de Mysterio — e termina com sua identidade secreta exposta ao mundo.",129,201907,"N"],
+["eternos","Eternos","Filme · 2024 · 156 min · Disney+","O","Seres imortais que moldaram a civilização humana em segredo se reúnem contra os Deviantes — e descobrem o verdadeiro propósito de sua missão na Terra.",156,202111,"D"],
+["nwh","Homem-Aranha: Sem Volta para Casa","Filme · 2024 · 148 min · Netflix · multiverso","R","Um feitiço de Strange dá errado e vilões (e Aranhas) de outros universos invadem o MCU. O multiverso escancarado para o grande público — com retorno do Demolidor.",148,202112,"N"],
+["mom","Doutor Estranho no Multiverso da Loucura","Filme · 2024 · 126 min · Disney+","R","Strange e America Chavez fogem através de universos da Feiticeira Escarlate corrompida pelo Darkhold. As regras (e os perigos) das incursões multiversais.",126,202205,"D"],
+["hawk","Gavião Arqueiro","Série · Natal 2024 · 6 ep · Disney+ · Kingpin e Yelena","O","No Natal nova-iorquino, Clint Barton treina a jovem Kate Bishop enquanto seu passado como Ronin o alcança — com Yelena em caçada e Kingpin nas sombras.",270,202111,"D"],
+["moon","Cavaleiro da Lua","Série · 2025 · 6 ep · Disney+","O","Marc Spector e Steven Grant dividem o mesmo corpo a serviço do deus lunar Khonshu, contra o culto do fanático Arthur Harrow.",300,202203,"D"],
+["wakanda2","Pantera Negra: Wakanda Para Sempre","Filme · 2025 · 161 min · Disney+ · lista oficial · Namor e Namora","E","Wakanda, de luto por T'Challa, entra em rota de colisão com Namor e o reino submarino de Talokan. Shuri assume o manto — e Namor, Namora e Riri Williams estreiam aqui.",161,202211,"D"],
+["echo","Echo","Série · 2025 · 5 ep · Disney+","O","Maya Lopez retorna a Oklahoma para acertar contas com Kingpin — e se reconectar com o legado ancestral Choctaw de sua família.",225,202401,"D"],
+["shehulk","Mulher-Hulk: Defensora de Heróis","Série · 2025 · 9 ep · Disney+","O","A advogada Jennifer Walters ganha os poderes do primo Bruce e passa a defender super-humanos no tribunal — quebrando a quarta parede no caminho.",315,202208,"D"],
+["msmarvel","Ms. Marvel","Série · 2025 · 6 ep · Disney+","O","A fã de super-heróis Kamala Khan descobre poderes ligados a um bracelete de família e à dimensão Noor, em Jersey City.",270,202206,"D"],
+["thor4","Thor: Amor e Trovão","Filme · 2025 · 119 min · Disney+","O","Thor enfrenta Gorr, o Carniceiro dos Deuses, ao lado de uma Jane Foster empunhando o Mjölnir como a Poderosa Thor.",119,202207,"D"],
+["iron","Coração de Ferro","Série · 2025 · 6 ep · Disney+ · Riri Williams","O","De volta a Chicago, Riri Williams constrói sua própria armadura e cruza com Parker Robbins, o místico Capuz — tecnologia contra magia.",270,202506,"D"],
+["werewolf","Lobisomem na Noite","Especial · 2025 · 53 min · Disney+","O","Em uma noite gótica em preto e branco, caçadores de monstros disputam uma relíquia — e um deles esconde um segredo peludo.",53,202210,"D"],
+["gotgx","Guardiões: Especial de Festas","Especial · 2025 · 44 min · Disney+","O","Drax e Mantis sequestram Kevin Bacon na Terra para animar o Natal de Peter Quill. Curto, leve e natalino.",44,202211,"D"],
+["quant","Homem-Formiga e a Vespa: Quantumania","Filme · 2025 · 124 min · Disney+ · Cassie Lang","R","A família Formiga inteira é sugada ao Reino Quântico, onde enfrenta Kang, o Conquistador. Cassie Lang vira heroína — e está no elenco de Doomsday.",124,202302,"D"],
+["gotg3","Guardiões da Galáxia Vol. 3","Filme · 2025 · 150 min · Disney+","O","Com Rocket entre a vida e a morte, os Guardiões enfrentam o Alto Evolucionário em sua última missão como equipe.",150,202305,"D"]]},
+{g:"Fase 5 · A convergência",items:[
+["secreta","Invasão Secreta","Série · 2026 · 6 ep · Disney+","O","Nick Fury retorna à Terra para desmontar uma infiltração de Skrulls rebeldes nos mais altos escalões dos governos humanos.",300,202306,"D"],
+["marvels","As Marvels","Filme · 2026 · 105 min · Disney+ · pós-créditos com o Fera","O","Carol Danvers, Monica Rambeau e Kamala Khan trocam de lugar a cada uso de poderes. A cena pós-créditos apresenta o Fera de Kelsey Grammer — hoje no elenco de Doomsday.",105,202311,"D"],
+["agatha","Agatha Desde Sempre","Série · 2026 · 9 ep · Disney+ · ponte para VisionQuest","R","Sem poderes, Agatha Harkness percorre a lendária Estrada das Bruxas ao lado de um adolescente misterioso ligado a Wanda. Ponte direta para VisionQuest.",360,202409,"D"],
+["dpw","Deadpool & Wolverine","Filme · Multiverso · 128 min · Disney+ · mutantes da Fox e Gambit","R","Deadpool arrasta um Wolverine falido por uma odisseia multiversal na AVT. A porta de entrada oficial dos mutantes da Fox no MCU — com estreia do Gambit de Channing Tatum.",128,202407,"D"],
+["ddborn1","Demolidor: Renascido (T1)","Série · 2026 · 9 ep · Disney+","R","Matt Murdock tenta viver apenas como advogado enquanto Wilson Fisk se elege prefeito de Nova York — até a máscara se tornar inevitável de novo.",450,202503,"D"],
+["capbnw","Capitão América: Admirável Mundo Novo","Filme · 2027 · 118 min · Disney+ · lista oficial da Disney","E","Sam Wilson, já como Capitão América, desvenda uma conspiração em torno do presidente Ross — que se transforma no Hulk Vermelho. Sam e Torres estão em Doomsday.",118,202502,"D"],
+["tbolts","Thunderbolts* (Novos Vingadores)","Filme · 2027 · 126 min · Disney+ · lista oficial · Sentinela/Bob","E","Anti-heróis descartáveis — Yelena, Bucky, Guardião Vermelho, Ghost e Agente Americano — viram os Novos Vingadores após o surgimento do instável Sentinela. Doomsday se passa ~14 meses depois.",126,202505,"D"]]},
+{g:"Fase 6 · Reta final 2026",items:[
+["f4","Quarteto Fantástico: Primeiros Passos","Filme · Terra-828 (1964) · 115 min · Disney+ · leva direto a Doomsday","E","Na retrô-futurista Terra-828, a primeira família da Marvel enfrenta Galactus e o Surfista Prateado. A única aparição de Reed, Sue, Johnny e Ben antes do filme — e a cena final conecta direto a Doomsday.",115,202507,"D"],
+["wonderman","Wonder Man","Série · jan/2026 · 8 ep · Disney+","O","Sátira de Hollywood: o ator Simon Williams disputa o papel de um super-herói no cinema... tendo poderes de verdade.",280,202601,"D"],
+["ddborn2","Demolidor: Renascido (T2)","Série · mar–mai/2026 · 9 ep · Disney+","R","As consequências do reinado de Fisk sobre Nova York explodem — e a temporada prepara o terreno para o novo Homem-Aranha.",450,202603,"D"],
+["punlast","O Justiceiro: Uma Última Morte","Especial · mai/2026 · Disney+","O","Especial brutal de Frank Castle em uma última caçada — desdobramento direto de Demolidor: Renascido.",90,202605,"D"],
+["spbnd","Homem-Aranha: Um Novo Dia","Filme · jul/2026 · 145 min · ainda nos cinemas","R","Esquecido por todos após Sem Volta para Casa, Peter recomeça do zero nas ruas de NY — cruzando com Hulk, Demolidor e Justiceiro.",145,202607,"C"],
+["xmen97","X-Men '97 (T2)","Animação · jul/2026 · Disney+","O","Continuação direta da animação clássica dos X-Men dos anos 90, em seu próprio universo — clima perfeito para o retorno dos mutantes.",300,202607,"D"],
+["vision","VisionQuest","Série · out/2026 · 8 ep · Disney+ · conclui a trilogia da Wanda/Visão","R","O Visão Branco busca suas memórias e sua humanidade. Encerra a trilogia iniciada em WandaVision — com o retorno de Ultron na voz de James Spader.",360,202610,"D","2026-10-14"]]},
+{g:"Arquivo Fox · X-Men originais no elenco",items:[
+["x1","X-Men: O Filme (2000)","Filme · 104 min · Disney+ · Prof. X, Magneto, Ciclope, Mística","R","Os mutantes emergem: Xavier recruta Wolverine e Vampira enquanto Magneto planeja 'mutar' os líderes mundiais à força. Estreia de 4 dos 6 veteranos que retornam em Doomsday.",104,200007,"D"],
+["x2","X-Men 2 (X2)","Filme · 2003 · 134 min · Disney+ · única aparição do Noturno","R","O coronel Stryker invade a escola de Xavier, forçando X-Men e a Irmandade de Magneto a uma aliança. A ÚNICA aparição do Noturno de Alan Cumming — indispensável.",134,200305,"D"],
+["x3","X-Men: O Confronto Final","Filme · 2006 · 104 min · Disney+ · estreia do Fera","R","Uma 'cura mutante' e o retorno de Jean Grey como a Fênix racham a comunidade mutante. Estreia do Fera de Kelsey Grammer no cinema.",104,200605,"D"],
+["dofp","X-Men: Dias de um Futuro Esquecido","Filme · 2014 · 132 min · Disney+ · une as duas gerações","E","Wolverine é enviado a 1973 para impedir o futuro apocalíptico dos Sentinelas. O filme que une as duas gerações de elenco e reescreve a linha do tempo da trilogia original.",132,201405,"D"],
+["logan","Logan","Filme · 2029 (interno) · 137 min · Disney+","O","Em 2029, um Logan envelhecido e um Xavier doente protegem a jovem X-23 na jornada final do Wolverine da era Fox.",137,201703,"D"],
+["dp1","Deadpool","Filme · 2016 · 108 min · Disney+","O","O mercenário tagarela Wade Wilson, desfigurado por um experimento, caça o responsável — quebrando a quarta parede o tempo todo.",108,201602,"D"],
+["dp2","Deadpool 2","Filme · 2018 · 119 min · Disney+","O","Deadpool monta a X-Force para proteger um jovem mutante do viajante do tempo Cable.",119,201805,"D"]]}
+];
+
+const PR={E:"Essencial",R:"Recomendado",O:"Opcional"};
+const PFN={D:"Disney+",N:"Netflix",C:"Cinemas"};
+const PREMIERE=new Date('2026-12-17T00:00:00-03:00');
+
+// ---- Conquistas ----
+const ACHS=[
+{id:"first",icon:"🎬",t:"Primeiro Passo",d:"Marque seu primeiro título assistido.",test:s=>s.done>=1,prog:s=>Math.min(s.done,1)+"/1"},
+{id:"half",icon:"⚔️",t:"Metade do Caminho",d:"Complete 50% de toda a lista.",test:s=>s.pct>=50,prog:s=>s.pct+"%/50%"},
+{id:"ess",icon:"🟢",t:"Decreto Cumprido",d:"Assista a todos os títulos essenciais.",ids:["iw","endgame","loki","shang","wakanda2","capbnw","tbolts","f4","dofp"]},
+{id:"infinity",icon:"💎",t:"Saga do Infinito",d:"Complete todos os filmes das Fases 1 a 3.",ids:["cap1","cmarvel","im1","im2","hulk","thor1","aveng1","thor2","im3","cap2","gotg1","gotg2","ultron","ant1","civil","bw","bp1","sp1","dstr","ragna","ant2","iw","endgame"]},
+{id:"ny",icon:"🌃",t:"Defensor de NY",d:"Complete as 6 séries da era Netflix.",ids:["dd","jj","lc","if","def","pun"]},
+{id:"mut",icon:"🧬",t:"Mutante Honorário",d:"Complete o Arquivo Fox dos X-Men.",ids:["x1","x2","x3","dofp","logan","dp1","dp2"]},
+{id:"multi",icon:"🌀",t:"Mestre do Multiverso",d:"Complete os 5 pilares do multiverso.",ids:["loki","whatif","nwh","mom","dpw"]},
+{id:"critic",icon:"⭐",t:"Crítico de Latvéria",d:"Avalie pelo menos 20 títulos.",test:s=>s.rcount>=20,prog:s=>Math.min(s.rcount,20)+"/20"},
+{id:"all",icon:"👑",t:"Latvéria Orgulhosa",d:"Complete 100% da lista. Doom aprova.",test:s=>s.pct>=100,prog:s=>s.pct+"%/100%"}
+];
+
+let checked={}, ratings={}, notes={}, watching=[], achWon=[], filter="all", pfFilter="all", query="", orderMode="chrono";
+const list=document.getElementById('list');
+const noresult=document.getElementById('noresult');
+const ALL=[]; DATA.forEach(sec=>sec.items.forEach(it=>ALL.push(it)));
+const byId={}; ALL.forEach(it=>byId[it[0]]=it);
+
+// ---- storage ----
+const KEY='doomsday-checklist';
+function load(){
+  try{
+    const r=localStorage.getItem(KEY);
+    if(r){
+      const p=JSON.parse(r);
+      if(p&&p.checked){checked=p.checked||{};ratings=p.ratings||{};notes=p.notes||{};watching=p.watching||[];achWon=p.ach||[];}
+      else{checked=p||{};}
+    }
+  }catch(e){}
+  render();
+}
+let saveT;
+function save(msg){
+  clearTimeout(saveT);
+  saveT=setTimeout(()=>{
+    try{localStorage.setItem(KEY,JSON.stringify({checked,ratings,notes,watching,ach:achWon}));toast(msg||'Progresso salvo');}
+    catch(e){toast('Salvo nesta sessão');}
+  },350);
+}
+function toast(msg){
+  const t=document.getElementById('toast');t.innerHTML=msg;t.classList.add('show');
+  clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// ---- helpers ----
+function norm(s){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+function matches(it){if(!query)return true;return norm(it[1]).includes(norm(query));}
+function hi(text){
+  if(!query)return text;
+  const n=norm(text), i=n.indexOf(norm(query));
+  if(i<0)return text;
+  return text.slice(0,i)+'<mark>'+text.slice(i,i+query.length)+'</mark>'+text.slice(i+query.length);
+}
+function isLocked(it){return it[8]&&new Date(it[8]+'T00:00:00-03:00')>new Date();}
+function fmtH(min){
+  const h=Math.floor(min/60), m=min%60;
+  return h>0?`${h}h${m?String(m).padStart(2,'0'):''}`:`${m}min`;
+}
+function show(it){
+  const[id,,,p,,,,pf]=it;
+  if(pfFilter!=='all'&&pf!==pfFilter)return false;
+  if(filter==='todo')return!checked[id];
+  if(filter==='all')return true;
+  return p===filter;
+}
+
+// ---- render ----
+const openSyn=new Set();
+function buildRow(it){
+  const[id,t,d,p,s]=it;
+  const locked=isLocked(it);
+  const row=document.createElement('div');
+  row.className='row'+(openSyn.has(id)?' open':'');
+  row.dataset.id=id;
+  const item=document.createElement('div');
+  item.className=`item pr${p}${checked[id]?' done':''}${locked?' locked':''}`;
+  if(!locked){item.setAttribute('role','checkbox');item.setAttribute('aria-checked',!!checked[id]);item.tabIndex=0;}
+  const rt=ratings[id];
+  const scoreCls=rt===undefined?'':(rt>=8?' hi':rt>=5?' mid':' lo');
+  const scoreHtml=rt===undefined?'':`<span class="score${scoreCls}" title="Sua nota">${rt}</span>`;
+  const wHtml=watching.includes(id)?`<span class="wbadge"><i></i>assistindo</span>`:'';
+  const lHtml=locked?`<span class="lbadge">🔒 estreia ${it[8].split('-').reverse().slice(0,2).join('/')}</span>`:'';
+  const boxHtml=locked?`<span class="lockico">🔒</span>`:`<span class="box"></span>`;
+  item.innerHTML=`${boxHtml}<span class="meta"><span class="t">${hi(t)}${wHtml}${lHtml}</span><span class="d">${d}</span></span>${scoreHtml}<span class="tag ${p}">${PR[p]}</span><button class="info${notes[id]?' hasnote':''}" aria-label="Detalhes de ${t}" title="Sinopse, nota e anotações">i</button>`;
+  const toggle=()=>{
+    if(locked){toast('🔒 Ainda não estreou — libera em '+it[8].split('-').reverse().join('/'));return;}
+    checked[id]=!checked[id];
+    if(!checked[id])delete checked[id];
+    else watching=watching.filter(w=>w!==id);
+    save();render();
+  };
+  item.addEventListener('click',e=>{if(e.target.closest('.info'))return;toggle();});
+  item.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){if(e.target.closest('.info'))return;e.preventDefault();toggle();}});
+  item.querySelector('.info').addEventListener('click',e=>{
+    e.stopPropagation();
+    openSyn.has(id)?openSyn.delete(id):openSyn.add(id);
+    row.classList.toggle('open');
+  });
+  const syn=document.createElement('div');
+  syn.className='syn';
+  let pills='';
+  for(let n=0;n<=10;n++)pills+=`<button class="rpill${ratings[id]===n?' sel':''}" data-n="${n}" aria-label="Nota ${n}"><span>${n}</span></button>`;
+  const isW=watching.includes(id);
+  syn.innerHTML=`<p><b class="h">Sinopse</b>${s}</p>
+    <div class="rate"><b class="h">Sua nota</b><div class="rpills">${pills}${ratings[id]!==undefined?'<button class="runrate">remover nota</button>':''}</div></div>
+    <div class="notes"><b class="h">Anotações</b><textarea placeholder="Ex.: melhor cena pós-crédito da fase; parei no ep. 4...">${notes[id]||''}</textarea></div>
+    ${(!locked&&!checked[id])?`<button class="watchbtn${isW?' on':''}">${isW?'▶ Assistindo agora — clique p/ remover':'▶ Marcar como assistindo agora'}</button>`:''}`;
+  syn.querySelectorAll('.rpill').forEach(bt=>{
+    bt.addEventListener('click',e=>{
+      e.stopPropagation();
+      const n=+bt.dataset.n;
+      if(ratings[id]===n)delete ratings[id];else ratings[id]=n;
+      save('Nota salva');render();
+    });
+  });
+  const rr=syn.querySelector('.runrate');
+  if(rr)rr.addEventListener('click',e=>{e.stopPropagation();delete ratings[id];save('Nota removida');render();});
+  const ta=syn.querySelector('textarea');
+  let nT;
+  ta.addEventListener('input',()=>{
+    clearTimeout(nT);
+    nT=setTimeout(()=>{
+      const v=ta.value.trim();
+      if(v)notes[id]=v;else delete notes[id];
+      item.querySelector('.info').classList.toggle('hasnote',!!v);
+      save('Anotação salva');
+    },600);
+  });
+  ta.addEventListener('click',e=>e.stopPropagation());
+  const wb=syn.querySelector('.watchbtn');
+  if(wb)wb.addEventListener('click',e=>{
+    e.stopPropagation();
+    if(watching.includes(id))watching=watching.filter(w=>w!==id);
+    else watching.push(id);
+    save(watching.includes(id)?'▶ Marcado como assistindo':'Removido de assistindo');
+    render();
+  });
+  row.appendChild(item);row.appendChild(syn);
+  return row;
+}
+function render(){
+  list.innerHTML='';
+  let any=false;
+  if(orderMode==='chrono'){
+    DATA.forEach(sec=>{
+      const vis=sec.items.filter(it=>show(it)&&matches(it));
+      if(!vis.length)return;
+      any=true;
+      const era=document.createElement('section');era.className='era';
+      era.innerHTML=`<h2>${sec.g} <small>${vis.length} título${vis.length>1?'s':''}</small></h2>`;
+      vis.forEach(it=>era.appendChild(buildRow(it)));
+      list.appendChild(era);
+    });
+  }else{
+    const vis=ALL.filter(it=>show(it)&&matches(it)).slice().sort((a,b)=>a[6]-b[6]);
+    let curYear=null, era=null;
+    vis.forEach(it=>{
+      any=true;
+      const y=Math.floor(it[6]/100);
+      if(y!==curYear){
+        curYear=y;
+        era=document.createElement('section');era.className='era';
+        era.innerHTML=`<h2>${y} <small>lançamentos</small></h2>`;
+        list.appendChild(era);
+      }
+      era.appendChild(buildRow(it));
+    });
+  }
+  noresult.classList.toggle('hidden',any);
+  if(!any)document.getElementById('nq').textContent=query||'(filtros atuais)';
+  renderContinue();
+  stats();
+}
+function renderContinue(){
+  const c=document.getElementById('controw');
+  c.innerHTML='';
+  watching.filter(id=>byId[id]&&!checked[id]).forEach(id=>{
+    const ch=document.createElement('button');
+    ch.className='contchip';
+    ch.innerHTML=`<span class="pulse"></span>Continuar: ${byId[id][1]}`;
+    ch.addEventListener('click',()=>{
+      const el=list.querySelector(`.row[data-id="${id}"]`);
+      if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.querySelector('.item').style.background='rgba(217,180,74,.1)';setTimeout(()=>el.querySelector('.item').style.background='',1200);}
+      else toast('Título oculto pelos filtros atuais');
+    });
+    c.appendChild(ch);
+  });
+}
+
+// ---- estatísticas, ritmo, veredicto, conquistas ----
+function stats(){
+  let tot=0,done=0,c={E:[0,0],R:[0,0],O:[0,0]};
+  let rsum=0,rcount=0,best=null,worst=null;
+  let remAll=0,remER=0;
+  const rated=[];
+  ALL.forEach(it=>{
+    const[id,t,,p,,min]=it;
+    tot++;c[p][1]++;
+    if(checked[id]){done++;c[p][0]++;}
+    else{remAll+=min;if(p!=='O')remER+=min;}
+    if(ratings[id]!==undefined){
+      rsum+=ratings[id];rcount++;rated.push([id,ratings[id]]);
+      if(best===null||ratings[id]>ratings[best])best=id;
+      if(worst===null||ratings[id]<ratings[worst])worst=id;
+    }
+  });
+  const pct=tot?Math.round(done/tot*100):0;
+  document.getElementById('pct').textContent=pct+'%';
+  document.getElementById('fill').style.width=pct+'%';
+  document.getElementById('cE').textContent=c.E[0]+'/'+c.E[1];
+  document.getElementById('cR').textContent=c.R[0]+'/'+c.R[1];
+  document.getElementById('cO').textContent=c.O[0]+'/'+c.O[1];
+
+  // ---- ritmo ----
+  const days=Math.max(1,Math.ceil((PREMIERE-new Date())/864e5));
+  const pace=document.getElementById('pace');
+  if(remAll===0){
+    pace.innerHTML=`<div class="done-msg">👑 Maratona 100% completa. Latvéria se orgulha — agora é só esperar 17/12.</div>`;
+  }else{
+    pace.innerHTML=`
+      <div class="pc"><b>${fmtH(remAll)}</b><span>faltam (tudo)</span></div>
+      <div class="pc"><b class="a">${fmtH(remER)}</b><span>essenc.+recom.</span></div>
+      <div class="pc"><b class="g">${Math.ceil(remAll/days)} min/dia</b><span>p/ ver tudo</span></div>
+      <div class="pc"><b class="g">${Math.ceil(remER/days)} min/dia</b><span>p/ o núcleo</span></div>`;
+  }
+
+  // ---- média / veredicto ----
+  const vnum=document.getElementById('vnum'),vphrase=document.getElementById('vphrase'),
+        vdetail=document.getElementById('vdetail'),cAvg=document.getElementById('cAvg');
+  vnum.className='vnum';
+  if(rcount===0){
+    cAvg.textContent='—';vnum.textContent='—';
+    vphrase.textContent='Avalie os títulos pelo botão ⓘ para descobrir o quanto você está gostando do MCU.';
+    vdetail.textContent='';
+  }else{
+    const avg=rsum/rcount, avgTxt=avg.toFixed(1).replace('.',',');
+    cAvg.textContent=avgTxt;vnum.textContent=avgTxt;
+    vnum.classList.add(avg>=8?'hi':avg>=5?'mid':'lo');
+    vphrase.textContent=
+      avg>=9?'Maratona lendária — vocês estão amando praticamente tudo!':
+      avg>=8?'Nível Vingadores: o saldo da maratona é excelente.':
+      avg>=7?'Muito bom! O MCU está agradando com folga.':
+      avg>=6?'Saldo positivo — bons momentos com alguns tropeços.':
+      avg>=5?'Na média: metade brilha, metade decepciona.':
+      avg>=3?'Maratona sofrida... Doom aprovaria esse rigor crítico.':
+             'Impiedosos! Nem Latvéria julgaria tão duro.';
+    let extra=`${rcount} título${rcount>1?'s':''} avaliado${rcount>1?'s':''} de ${tot}`;
+    if(rcount>=2&&best!==worst)extra+=` · Melhor: ${byId[best][1]} (${ratings[best]}) · Pior: ${byId[worst][1]} (${ratings[worst]})`;
+    vdetail.textContent=extra;
+  }
+
+  // ---- média por era ----
+  const es=document.getElementById('erastats');
+  let ehtml='';
+  DATA.forEach(sec=>{
+    let s=0,n=0;
+    sec.items.forEach(([id])=>{if(ratings[id]!==undefined){s+=ratings[id];n++;}});
+    if(!n)return;
+    const a=s/n, cls=a>=8?'':a>=5?' mid':' lo';
+    ehtml+=`<div class="erow"><span class="en">${sec.g.split('·')[0].trim()}</span><span class="ebar"><i class="${cls.trim()}" style="width:${a*10}%"></i></span><span class="ev">${a.toFixed(1).replace('.',',')}</span></div>`;
+  });
+  es.innerHTML=ehtml?`<div class="eh">Média por era</div>${ehtml}`:'';
+
+  // ---- conquistas ----
+  const st={done,pct,rcount};
+  const grid=document.getElementById('achgrid');
+  grid.innerHTML='';
+  let won=0;
+  const newly=[];
+  ACHS.forEach(a=>{
+    let ok,prog;
+    if(a.ids){
+      const d=a.ids.filter(id=>checked[id]).length;
+      ok=d===a.ids.length;prog=d+'/'+a.ids.length;
+    }else{ok=a.test(st);prog=a.prog(st);}
+    if(ok){won++;if(!achWon.includes(a.id)){achWon.push(a.id);newly.push(a);}}
+    const el=document.createElement('div');
+    el.className='ach'+(ok?' won':'');
+    el.innerHTML=`<div class="medal"><span>${a.icon}</span></div><div><div class="at">${a.t}</div><div class="ad">${a.d}</div><div class="ap">${ok?'✓ Conquistada':'Progresso: '+prog}</div></div>`;
+    grid.appendChild(el);
+  });
+  document.getElementById('achcount').textContent=won+'/'+ACHS.length+' desbloqueadas';
+  if(newly.length){
+    save();
+    toast('🏆 Conquista desbloqueada: <b>'+newly.map(a=>a.icon+' '+a.t).join(' · ')+'</b>');
+  }
+}
+
+// ---- compartilhar ----
+document.getElementById('sharebtn').addEventListener('click',async()=>{
+  let tot=0,done=0,rsum=0,rcount=0,remAll=0,remER=0;
+  const rated=[];
+  ALL.forEach(it=>{
+    const[id,t,,p,,min]=it;tot++;
+    if(checked[id])done++;else{remAll+=min;if(p!=='O')remER+=min;}
+    if(ratings[id]!==undefined){rsum+=ratings[id];rcount++;rated.push([t,ratings[id]]);}
+  });
+  const days=Math.max(0,Math.ceil((PREMIERE-new Date())/864e5));
+  rated.sort((a,b)=>b[1]-a[1]);
+  let txt=`🟢 PROTOCOLO DOOMSDAY — meu progresso no MCU\n`;
+  txt+=`✅ ${Math.round(done/tot*100)}% concluído (${done}/${tot} títulos)\n`;
+  if(rcount){
+    txt+=`◆ Média das notas: ${(rsum/rcount).toFixed(1).replace('.',',')} (${rcount} avaliados)\n`;
+    txt+=`🏆 Top: ${rated.slice(0,3).map(r=>`${r[0]} (${r[1]})`).join(' · ')}\n`;
+    if(rated.length>3)txt+=`💀 Lanterna: ${rated[rated.length-1][0]} (${rated[rated.length-1][1]})\n`;
+  }
+  txt+=`⏳ Faltam ${days} dias e ${fmtH(remAll)} de conteúdo (${fmtH(remER)} do núcleo essencial+recomendado)\n`;
+  txt+=`🎬 Rumo a Vingadores: Doomsday — 17/12/2026`;
+  try{await navigator.clipboard.writeText(txt);toast('📋 Resumo copiado! Cole no WhatsApp.');}
+  catch(e){prompt('Copie o resumo:',txt);}
+});
+
+// ---- exportar / importar ----
+document.getElementById('exportbtn').addEventListener('click',()=>{
+  const blob=new Blob([JSON.stringify({v:2,exportadoEm:new Date().toISOString(),checked,ratings,notes,watching,ach:achWon},null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='protocolo-doomsday-backup.json';
+  a.click();URL.revokeObjectURL(a.href);
+  toast('⬇ Backup exportado');
+});
+document.getElementById('importbtn').addEventListener('click',()=>document.getElementById('importfile').click());
+document.getElementById('importfile').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const p=JSON.parse(r.result);
+      if(!p||typeof p!=='object'||(!p.checked&&!p.ratings))throw 0;
+      if(!confirm('Importar backup? Isso substitui o progresso atual deste navegador.'))return;
+      checked=p.checked||{};ratings=p.ratings||{};notes=p.notes||{};watching=p.watching||[];achWon=p.ach||[];
+      save('⬆ Backup restaurado');render();
+    }catch(err){toast('Arquivo inválido — use um backup exportado daqui.');}
+  };
+  r.readAsText(f);
+  e.target.value='';
+});
+
+// ---- busca ----
+const sinput=document.getElementById('search'), sbox=document.getElementById('sbox');
+let debT;
+sinput.addEventListener('input',()=>{
+  clearTimeout(debT);
+  debT=setTimeout(()=>{query=sinput.value.trim();sbox.classList.toggle('has',!!query);render();},160);
+});
+document.getElementById('clear').addEventListener('click',()=>{
+  sinput.value='';query='';sbox.classList.remove('has');render();sinput.focus();
+});
+
+// ---- filtros ----
+document.querySelectorAll('.chip').forEach(ch=>{
+  ch.addEventListener('click',()=>{
+    document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));
+    ch.classList.add('on');filter=ch.dataset.f;render();
+  });
+});
+document.querySelectorAll('.pfb').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.pfb').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');pfFilter=b.dataset.pf;render();
+  });
+});
+document.getElementById('orderbtn').addEventListener('click',function(){
+  orderMode=orderMode==='chrono'?'release':'chrono';
+  this.textContent=orderMode==='chrono'?'⇅ Ordem: Cronológica':'⇅ Ordem: Lançamento';
+  this.classList.toggle('on',orderMode==='release');
+  render();
+});
+
+// ---- reset ----
+document.getElementById('reset').addEventListener('click',()=>{
+  if(!confirm('Zerar TODO o progresso: marcações, notas, anotações, conquistas e "assistindo agora"?'))return;
+  checked={};ratings={};notes={};watching=[];achWon=[];
+  try{localStorage.removeItem(KEY);}catch(e){}
+  render();toast('Progresso zerado');
+});
+
+// ---- countdown ----
+function tick(){
+  let diff=Math.max(0,PREMIERE-new Date());
+  const d=Math.floor(diff/864e5);diff-=d*864e5;
+  const h=Math.floor(diff/36e5);diff-=h*36e5;
+  const m=Math.floor(diff/6e4);
+  document.getElementById('cd-d').textContent=d;
+  document.getElementById('cd-h').textContent=String(h).padStart(2,'0');
+  document.getElementById('cd-m').textContent=String(m).padStart(2,'0');
+}
+tick();setInterval(tick,30000);
+load();
+</script>
+</body>
+</html>
