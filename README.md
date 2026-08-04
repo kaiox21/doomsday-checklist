@@ -92,7 +92,9 @@ Como o `index.html` é estático, as meta tags dele não podem variar por pessoa
 
 ## Ícones
 
-Todos os PNGs de ícone saem de `assets/doom-source.jpg` via `scripts/make-icons.py` — editar um deles à mão seria desfeito na próxima execução. Para mudar o enquadramento, ajuste `CROP_X`, `CROP_Y` e `CROP_SIZE` no script e rode de novo.
+Todos os PNGs de ícone **e** a máscara que aparece no card do `/api/og` saem de `assets/doom-source.jpg` via `scripts/make-icons.py` — editar qualquer um à mão seria desfeito na próxima execução. Para mudar o enquadramento, ajuste `CROP_X`, `CROP_Y` e `CROP_SIZE` no script e rode de novo.
+
+O script também escreve `lib/doom-card.js`, com a máscara embutida como data URI. É de propósito: buscar a imagem por URL funcionaria, mas acrescentaria latência e um modo de falha a cada preview gerado. Vai em JPEG porque é arte fotográfica — em PNG pesaria o dobro.
 
 Se trocar a arte de origem, confira o resultado a 32px antes de fechar: é o tamanho da aba do navegador, e é onde a maioria das imagens detalhadas deixa de funcionar.
 

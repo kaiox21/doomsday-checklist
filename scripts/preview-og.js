@@ -34,7 +34,11 @@ fs.mkdirSync(outDir, { recursive: true });
 const cases = [
   ['og-padrao.png', 'https://guia.doomsday.sbs/api/og'],
   ['og-progresso.png', `https://guia.doomsday.sbs/api/og?s=${code}&n=Kaio`],
-  ['og-zerado.png', `https://guia.doomsday.sbs/api/og?s=${encode(75, new Set(), new Map())}`]
+  ['og-zerado.png', `https://guia.doomsday.sbs/api/og?s=${encode(75, new Set(), new Map())}`],
+  // Nome no limite de 24 caracteres: com a máscara ocupando a direita, é o
+  // caso que primeiro quebraria linha e colidiria com o rodapé.
+  ['og-nome-longo.png',
+    `https://guia.doomsday.sbs/api/og?s=${code}&n=${encodeURIComponent('Wanda Maximoff Vision Sc')}`]
 ];
 
 for (const [file, url] of cases) {

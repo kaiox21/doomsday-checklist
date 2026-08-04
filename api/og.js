@@ -10,11 +10,15 @@
 
 import { ImageResponse } from '@vercel/og';
 import { decodeShareState, daysLeft } from '../lib/share-state.js';
+import { DOOM_IMAGE } from '../lib/doom-card.js';
 
 export const config = { runtime: 'edge' };
 
 const BG = '#060907', GREEN = '#3CE07E', DIM = '#1E6B41',
       LINE = '#1E2C22', MUTED = '#76867C', SILVER = '#C9D2CD', WHITE = '#EAF2ED';
+
+// Largura útil do texto. O resto dos 1200px fica para a máscara.
+const COL = 600;
 
 const el = (type, style, children) => ({ type, props: { style, children } });
 const txt = (style, children) => el('div', style, children);
@@ -47,26 +51,32 @@ export default async function handler(req) {
 
   let middle;
   if (state) {
-    const who = rawName ? `${rawName} · ` : '';
     const avg = state.avg === null
       ? 'sem notas ainda'
       : `média ${state.avg.toFixed(1).replace('.', ',')}`;
-    middle = el('div', { display: 'flex', flexDirection: 'column' }, [
+    // O nome vai em linha própria: junto da contagem, um nome no limite de 24
+    // caracteres quebrava a linha e deixava uma palavra órfã embaixo.
+    const lines = [
       el('div', { display: 'flex', alignItems: 'flex-end' }, [
         txt({ fontSize: 190, lineHeight: 1, color: GREEN, fontFamily: 'Anton' }, String(state.pct)),
         txt({ fontSize: 78, lineHeight: 1.6, color: DIM, fontFamily: 'Anton' }, '%')
-      ]),
-      txt({ fontSize: 36, color: WHITE, marginTop: 14 },
-        `${who}${state.done} de ${state.tot} títulos do MCU`),
-      txt({ fontSize: 28, color: MUTED, marginTop: 8 }, avg)
-    ]);
+      ])
+    ];
+    if (rawName) lines.push(txt({ fontSize: 30, color: GREEN, marginTop: 14 }, rawName));
+    lines.push(txt({ fontSize: 33, color: WHITE, marginTop: rawName ? 4 : 14 },
+      `${state.done} de ${state.tot} títulos do MCU`));
+    lines.push(txt({ fontSize: 27, color: MUTED, marginTop: 8 }, avg));
+    middle = el('div', { display: 'flex', flexDirection: 'column' }, lines);
   } else {
+    // Tudo aqui é dimensionado para caber na coluna de 600px sem quebrar
+    // linha — com a máscara ocupando a direita, o texto não tem para onde
+    // crescer sem colidir com o rodapé.
     middle = el('div', { display: 'flex', flexDirection: 'column' }, [
-      txt({ fontSize: 116, lineHeight: 1, color: WHITE, fontFamily: 'Anton' }, 'CHECKLIST MCU'),
-      txt({ fontSize: 34, color: SILVER, marginTop: 20 },
-        '75 títulos em ordem cronológica, do essencial ao opcional'),
-      txt({ fontSize: 28, color: MUTED, marginTop: 10 },
-        'Progresso, notas, ritmo de maratona e placar entre amigos')
+      txt({ fontSize: 86, lineHeight: 1, color: WHITE, fontFamily: 'Anton' }, 'CHECKLIST MCU'),
+      txt({ fontSize: 30, color: SILVER, marginTop: 20 },
+        '75 títulos em ordem cronológica'),
+      txt({ fontSize: 25, color: MUTED, marginTop: 10 },
+        'Progresso, notas e ritmo de maratona')
     ]);
   }
 
@@ -88,13 +98,45 @@ export default async function handler(req) {
       days ? `faltam ${days} dias` : 'é hoje')
   ]);
 
-  const root = el('div', {
+  // A máscara sangra pela direita. O texto fica numa coluna à esquerda com
+  // largura fixa, para nunca cair por cima do rosto seja qual for o conteúdo.
+  const mask = {
+    type: 'img',
+    props: {
+      src: DOOM_IMAGE,
+      width: 630,
+      height: 630,
+      style: { position: 'absolute', top: 0, right: 0 }
+    }
+  };
+
+  // Escurece da esquerda para a direita: o texto assenta no preto sólido e a
+  // máscara emerge da penumbra em vez de terminar num corte reto.
+  //
+  // O trecho 100% opaco vai até 50% (600px) de propósito: a borda esquerda da
+  // imagem cai em 570px, então fica coberta. Sem isso, sobra uma emenda
+  // vertical nítida onde o JPEG começa.
+  const scrim = el('div', {
+    position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+    backgroundImage:
+      'linear-gradient(90deg, ' +
+      `${BG} 0%, ${BG} 50%, rgba(6,9,7,0.62) 66%, ` +
+      'rgba(6,9,7,0.20) 84%, rgba(6,9,7,0) 100%)'
+  }, '');
+
+  const content = el('div', {
+    position: 'absolute', top: 0, left: 0,
     display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-    width: '100%', height: '100%', padding: '58px 68px',
-    backgroundColor: BG,
-    backgroundImage: `linear-gradient(160deg, rgba(60,224,126,0.10), rgba(6,9,7,0) 55%)`,
-    color: SILVER, fontFamily: 'sans-serif'
+    width: COL + 136, height: '100%', padding: '58px 68px'
   }, state ? [head, middle, bar, foot] : [head, middle, foot]);
+
+  const root = el('div', {
+    position: 'relative', display: 'flex',
+    width: '100%', height: '100%',
+    backgroundColor: BG,
+    backgroundImage: 'linear-gradient(160deg, rgba(60,224,126,0.10), rgba(6,9,7,0) 55%)',
+    color: SILVER, fontFamily: 'sans-serif'
+  }, [mask, scrim, content]);
 
   const font = await anton();
 

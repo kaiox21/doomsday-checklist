@@ -17,6 +17,8 @@ olhos vermelhos e as maçãs metálicas continuam distinguíveis, que é o máxi
 uma arte detalhada entrega nesse tamanho.
 """
 
+import base64
+import io
 import os
 from PIL import Image
 
@@ -32,6 +34,13 @@ SIZES = {
     'apple-touch-icon.png': 180,  # tela de início do iOS
     'favicon-32.png': 32,         # aba do navegador
 }
+
+# Versão embutida no /api/og. Vai como data URI dentro do bundle da edge
+# function para a renderização do card não depender de rede — buscar a imagem
+# por URL funcionaria, mas acrescentaria latência e um modo de falha a cada
+# preview gerado. JPEG e não PNG: é arte fotográfica, e aqui PNG pesa o dobro.
+CARD_JS = os.path.join(ROOT, 'lib', 'doom-card.js')
+CARD_SIZE, CARD_QUALITY = 700, 85
 
 
 def main():
@@ -53,6 +62,29 @@ def main():
                            dither=Image.FLOYDSTEINBERG)
         out.save(path, optimize=True)
         print(f'  {name:24} {size}x{size}  {os.path.getsize(path):>7} bytes')
+
+    write_card(face)
+
+
+def write_card(face):
+    """Emite lib/doom-card.js com a máscara como data URI."""
+    buf = io.BytesIO()
+    face.resize((CARD_SIZE, CARD_SIZE), Image.LANCZOS).save(
+        buf, 'JPEG', quality=CARD_QUALITY, optimize=True)
+    uri = 'data:image/jpeg;base64,' + base64.b64encode(buf.getvalue()).decode()
+
+    os.makedirs(os.path.dirname(CARD_JS), exist_ok=True)
+    with open(CARD_JS, 'w', encoding='utf-8') as f:
+        f.write(
+            '// GERADO POR scripts/make-icons.py — não edite à mão.\n'
+            '//\n'
+            '// A máscara usada no card do /api/og, embutida como data URI para a\n'
+            '// renderização não depender de uma requisição de rede.\n'
+            f'export const DOOM_SIZE = {CARD_SIZE};\n'
+            f'export const DOOM_IMAGE = \'{uri}\';\n'
+        )
+    kb = os.path.getsize(CARD_JS) / 1024
+    print(f'  {"lib/doom-card.js":24} {CARD_SIZE}x{CARD_SIZE}  {kb:>7.1f} KB')
 
 
 if __name__ == '__main__':
