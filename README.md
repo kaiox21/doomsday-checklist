@@ -1,6 +1,8 @@
 # Protocolo Doomsday — Checklist MCU
 
-Checklist cronológico do Universo Cinematográfico Marvel para chegar preparado a **Vingadores: Doutor Destino** (17/12/2026). Uma única página HTML, sem build, sem back-end e sem conta: todo o progresso fica no `localStorage` do seu navegador.
+Checklist cronológico do Universo Cinematográfico Marvel para chegar preparado a **Vingadores: Doutor Destino** (17/12/2026). O progresso vive no `localStorage` do seu navegador — sem conta, sem senha, sem servidor no meio.
+
+No ar em **[guia.doomsday.sbs](https://guia.doomsday.sbs)**.
 
 ## O que tem dentro
 
@@ -13,41 +15,77 @@ Checklist cronológico do Universo Cinematográfico Marvel para chegar preparado
 - **Busca e filtros** por título, prioridade, plataforma (Disney+, Netflix, cinemas) e "falta assistir".
 - **Duas ordens de exibição**: cronológica (linha do tempo da história) ou por data de lançamento.
 - **9 conquistas** — Saga do Infinito, Defensor de NY, Mutante Honorário, Mestre do Multiverso, Latvéria Orgulhosa e outras.
-- **Veredicto da maratona**: média das suas notas, estatísticas por era e um resumo pronto pra copiar e compartilhar.
-- **Exportar / importar** o progresso em JSON, pra fazer backup ou levar pra outro navegador.
+- **Veredicto da maratona**: média das suas notas, estatísticas por era e um resumo pronto pra copiar.
+- **Link do progresso** — gera uma URL com o seu estado embutido. Quem abrir vê onde você está e pode importar.
+- **Placar do grupo** — ranking entre quem publicar o progresso. Só nome, porcentagem e média.
+- **Instalável (PWA)** — dá pra colocar na tela de início do celular e usar offline.
+- **Exportar / importar** o progresso em JSON, pra backup ou pra levar a outro navegador.
+
+## Estrutura
+
+```
+index.html      página inteira: layout, estilos e lógica
+data.js         catálogo dos 75 títulos — mexa aqui pra mudar a lista
+sw.js           service worker (offline)
+manifest.json   metadados de PWA
+lib/            código compartilhado entre as funções serverless
+api/og.js       imagem de preview gerada na hora
+api/share.js    página de compartilhamento com as meta tags certas
+api/board.js    placar do grupo (Redis)
+scripts/        utilitários de desenvolvimento, fora do site
+```
 
 ## Rodando localmente
 
-Não precisa de nada instalado — é um arquivo só:
+O site continua funcionando com um duplo-clique:
 
 ```bash
 open index.html
 ```
 
-Se preferir servir por HTTP:
+O placar precisa de HTTP e das funções da Vercel, então nesse modo ele aparece desligado — o resto funciona igual. Pra servir por HTTP:
 
 ```bash
-python3 -m http.server 8000
-# depois acesse http://localhost:8000
+npm run dev     # python3 -m http.server 8000
 ```
 
-## Deploy na Vercel
+### Utilitários
 
-Site estático puro, sem configuração. Na Vercel:
+```bash
+npm install                 # só é preciso para os dois comandos abaixo
+npm run og                  # renderiza os cards do /api/og em scripts/out/
+node scripts/test-share.js  # testa o ida-e-volta do link de progresso
+```
 
-1. **Add New → Project** e importe este repositório.
-2. Framework Preset: **Other**.
-3. Build Command: deixe vazio · Output Directory: deixe vazio (raiz do projeto).
-4. **Deploy**.
+O `test-share.js` extrai as funções reais do `index.html` e confere que o que o navegador codifica é exatamente o que as funções serverless decodificam. Vale rodar depois de qualquer mexida no `data.js` ou na codificação.
 
-O `index.html` na raiz já é servido direto. Cada push na branch `main` gera um novo deploy automático.
+## Deploy
+
+Site estático com funções na pasta `api/`. Na Vercel: **Add New → Project**, importe o repositório, Framework Preset **Other**, sem build command. Cada push na `main` gera um deploy.
+
+### Domínio
+
+Em **Settings → Domains**, adicione `guia.doomsday.sbs`. Na Hostinger (que hospeda o DNS), crie um registro `CNAME` com nome `guia` apontando para `cname.vercel-dns.com`.
+
+### Ligando o placar
+
+O placar fica desligado até existir um banco. Em **Storage → Create Database → Upstash for Redis**, crie e conecte ao projeto. Isso injeta `KV_REST_API_URL` e `KV_REST_API_TOKEN` (as variáveis do Upstash direto também servem), e o `api/board.js` passa a responder. Sem elas, ele devolve `501` e a página mostra um aviso no lugar da lista.
+
+## Como funciona o link de progresso
+
+O estado vira uma sequência compacta de bytes — `[versão][total][checksum do catálogo][bitmap de assistidos][notas em nibbles]` — codificada em base64url. São ~72 caracteres para os 75 títulos. **Anotações de texto não entram**: elas nunca saem do seu navegador.
+
+O checksum serve para detectar quando o catálogo mudou desde que o link foi gerado; nesse caso a página avisa em vez de embaralhar os títulos em silêncio.
+
+Como o `index.html` é estático, as meta tags dele não podem variar por pessoa — e o `#fragmento` nem chega ao servidor. Por isso o botão gera um link para `/api/share?s=...`, que devolve um HTML mínimo com as meta tags certas (para o preview do WhatsApp/Twitter) e redireciona o visitante para `/#s=...`.
 
 ## Detalhes técnicos
 
-- HTML + CSS + JavaScript puro, tudo em um único arquivo (`index.html`, ~60 KB).
-- Única dependência externa: as fontes Anton e Archivo via Google Fonts.
-- Persistência em `localStorage`, na chave `doomsday-checklist` — nada é enviado a lugar nenhum, nenhum dado sai do seu navegador.
-- Layout responsivo e com `prefers-reduced-motion` respeitado.
+- HTML + CSS + JavaScript puro. Sem framework, sem etapa de build, sem bundler.
+- Única dependência do site: as fontes Anton e Archivo via Google Fonts. O `@vercel/og` só é usado pelas funções serverless.
+- Persistência em `localStorage`, na chave `doomsday-checklist`.
+- Layout responsivo, com `prefers-reduced-motion` respeitado.
+- O `api/og.js` monta os elementos como objetos simples em vez de JSX, o que evita precisar de transpilação num projeto sem build.
 
 ## Aviso
 

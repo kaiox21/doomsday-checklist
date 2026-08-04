@@ -1,0 +1,14 @@
+{
+  "name": "doomsday-checklist",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Checklist cronológico do MCU para Vingadores: Doutor Destino",
+  "scripts": {
+    "dev": "python3 -m http.server 8000",
+    "og": "node scripts/preview-og.js"
+  },
+  "dependencies": {
+    "@vercel/og": "^0.6.4"
+  }
+}

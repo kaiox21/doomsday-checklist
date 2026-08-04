@@ -4,6 +4,34 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Protocolo Doomsday — Checklist MCU</title>
+<meta name="description" content="Checklist cronológico dos 75 títulos do MCU para chegar preparado a Vingadores: Doutor Destino (17/12/2026). Progresso, notas, ritmo de maratona e placar entre amigos.">
+<meta name="author" content="Kaio Xavier">
+<meta name="theme-color" content="#060907">
+<link rel="canonical" href="https://guia.doomsday.sbs/">
+
+<!-- ===== Social / Open Graph ===== -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Protocolo Doomsday">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:url" content="https://guia.doomsday.sbs/">
+<meta property="og:title" content="Protocolo Doomsday — Checklist MCU">
+<meta property="og:description" content="75 títulos do MCU em ordem cronológica para chegar preparado a Vingadores: Doutor Destino.">
+<meta property="og:image" content="https://guia.doomsday.sbs/api/og">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Protocolo Doomsday — Checklist MCU">
+<meta name="twitter:description" content="75 títulos do MCU em ordem cronológica para chegar preparado a Vingadores: Doutor Destino.">
+<meta name="twitter:image" content="https://guia.doomsday.sbs/api/og">
+
+<!-- ===== Ícones / PWA ===== -->
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Doomsday">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -345,7 +373,69 @@ mark{background:rgba(60,224,126,.25);color:#EAF2ED;border-radius:2px;padding:0 1
 }
 .toast.show{transform:translateX(-50%) translateY(0)}
 .hidden{display:none}
+
+/* ===== CAIXA DE PROGRESSO COMPARTILHADO ===== */
+.sharedbox{
+  margin:22px 0 4px;padding:16px 18px;border-radius:4px;
+  border:1px solid var(--gold-dim);background:linear-gradient(180deg,rgba(217,180,74,.07),var(--panel));
+}
+.sharedbox.bad{border-color:var(--danger);background:var(--panel)}
+.sharedbox .sh{
+  font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);
+  font-weight:600;margin-bottom:8px;
+}
+.sharedbox .sstat{font-size:15px;color:#EAF2ED;line-height:1.5}
+.sharedbox .sstat b{color:var(--gold);font-weight:700}
+.sharedbox .swarn{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}
+.sharedbox .sacts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.sharedbox button{
+  background:none;border:1px solid var(--gold-dim);color:var(--gold);
+  font-family:inherit;font-size:12px;letter-spacing:.06em;
+  padding:8px 15px;border-radius:3px;cursor:pointer;transition:all .2s;
+}
+.sharedbox button:hover{border-color:var(--gold);background:rgba(217,180,74,.1)}
+.sharedbox button.ghost{border-color:var(--line);color:var(--faint)}
+.sharedbox button.ghost:hover{border-color:var(--muted);color:var(--silver);background:none}
+
+/* ===== PLACAR DO GRUPO ===== */
+.board{margin:44px 0 0}
+.board h2{
+  font-family:'Anton',sans-serif;font-size:19px;text-transform:uppercase;
+  letter-spacing:.06em;color:#EAF2ED;margin-bottom:4px;
+}
+.board h2 small{font-family:'Archivo',sans-serif;font-size:11px;letter-spacing:.2em;color:var(--faint);font-weight:500;margin-left:8px}
+.board .bhint{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.55}
+.bname{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.bname input{
+  flex:1;min-width:170px;background:var(--panel);border:1px solid var(--line);
+  color:var(--silver);font-family:inherit;font-size:13px;padding:9px 12px;border-radius:3px;
+}
+.bname input:focus{outline:none;border-color:var(--green-dim)}
+.bname button{
+  background:none;border:1px solid var(--green-dim);color:var(--green);
+  font-family:inherit;font-size:12px;letter-spacing:.06em;padding:9px 16px;border-radius:3px;cursor:pointer;transition:all .2s;
+}
+.bname button:hover:not(:disabled){background:var(--green-glow)}
+.bname button:disabled{opacity:.4;cursor:default}
+.brow{
+  display:flex;align-items:center;gap:12px;padding:11px 14px;
+  border:1px solid var(--line);border-radius:3px;background:var(--panel);margin-bottom:6px;
+}
+.brow.me{border-color:var(--green-dim);background:linear-gradient(90deg,var(--green-glow),var(--panel) 60%)}
+.brow .bpos{font-family:'Anton',sans-serif;font-size:17px;color:var(--faint);min-width:26px}
+.brow.me .bpos{color:var(--green)}
+.brow:nth-child(1) .bpos{color:var(--gold)}
+.brow .bwho{flex:1;min-width:0;font-size:14px;color:#EAF2ED;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brow .bwho i{font-style:normal;font-size:11px;color:var(--muted);margin-left:7px}
+.brow .bbar{width:88px;height:5px;background:var(--line);border-radius:3px;overflow:hidden;flex-shrink:0}
+.brow .bbar i{display:block;height:100%;background:var(--green);border-radius:3px}
+.brow .bpct{font-family:'Anton',sans-serif;font-size:16px;color:var(--green);min-width:44px;text-align:right}
+.bempty{font-size:13px;color:var(--muted);padding:14px 0;line-height:1.6}
+.bempty b{color:var(--green)}
+
 @media(max-width:560px){
+  .brow .bbar{display:none}
+  .board .bhint{font-size:11.5px}
   .count{gap:16px}.count b{font-size:30px}
   .tag{display:none}
   .item{padding:12px 6px}
@@ -408,10 +498,13 @@ mark{background:rgba(60,224,126,.25);color:#EAF2ED;border-radius:2px;padding:0 1
     <button class="tbtn pfb" data-pf="N">Netflix</button>
     <button class="tbtn pfb" data-pf="C">Cinemas</button>
     <span class="sep"></span>
+    <button class="tbtn" id="linkbtn" title="Gerar um link com o seu progresso embutido">🔗 Link do progresso</button>
     <button class="tbtn" id="exportbtn" title="Baixar backup do progresso">⬇ Exportar</button>
     <button class="tbtn" id="importbtn" title="Restaurar backup">⬆ Importar</button>
     <input type="file" id="importfile" accept=".json,application/json" class="hidden">
   </div>
+
+  <div class="sharedbox hidden" id="sharedbox"></div>
 
   <div class="controw" id="controw"></div>
 
@@ -432,6 +525,16 @@ mark{background:rgba(60,224,126,.25);color:#EAF2ED;border-radius:2px;padding:0 1
     <button class="sharebtn" id="sharebtn">📋 Copiar resumo para compartilhar</button>
   </div>
 
+  <section class="board" id="board">
+    <h2>Placar do grupo <small id="bcount"></small></h2>
+    <p class="bhint">Coloque seu nome para aparecer no ranking. Só saem daqui o nome, a porcentagem e a média — anotações e notas por título nunca são enviadas.</p>
+    <div class="bname">
+      <input type="text" id="bnick" maxlength="24" placeholder="Seu nome no placar (ex.: Kaio)" autocomplete="nickname">
+      <button id="bsend">Publicar progresso</button>
+    </div>
+    <div id="blist"></div>
+  </section>
+
   <div class="finale">
     <div class="lbl">O evento</div>
     <h3>Vingadores: Doutor Destino</h3>
@@ -445,94 +548,14 @@ mark{background:rgba(60,224,126,.25);color:#EAF2ED;border-radius:2px;padding:0 1
 
 <div class="toast" id="toast">Progresso salvo</div>
 
+<script src="data.js"></script>
 <script>
-// [id, título, detalhes, prioridade, sinopse, minutos, chaveLançamento(aaaamm), plataforma(D/N/C), estreiaFutura(ISO opcional)]
-const DATA = [
-{g:"Origens · 1942–1995",items:[
-["cap1","Capitão América: O Primeiro Vingador","Filme · 1943–45 · 124 min · Disney+","R","Na 2ª Guerra Mundial, o franzino Steve Rogers recebe o soro do supersoldado e enfrenta a Hydra e o Caveira Vermelha — até cair no gelo com o Tesseract.",124,201107,"D"],
-["olhos","Olhos de Wakanda","Animação · Antiguidade–1896 · 4 ep · Disney+","O","Antologia animada sobre os Cães de Guerra, guerreiros wakandanos enviados através dos séculos para recuperar artefatos de vibranium roubados.",100,202508,"D"],
-["agcarter","Agente Carter (One-Shot)","Curta · 1946 · 15 min","O","No pós-guerra, Peggy Carter prova seu valor em uma missão solo da SSR — o embrião da fundação da S.H.I.E.L.D.",15,201309,"D"],
-["cmarvel","Capitã Marvel","Filme · 1995 · 123 min · Disney+","O","Nos anos 90, Carol Danvers recupera memórias de sua vida na Terra e descobre o alcance de seus poderes cósmicos em meio à guerra entre Kree e Skrulls.",123,201903,"D"]]},
-{g:"Fase 1 · A era dos heróis",items:[
-["im1","Homem de Ferro","Filme · 2010 · 126 min · Disney+","O","Sequestrado por terroristas, o magnata das armas Tony Stark constrói uma armadura para escapar — e decide virar algo maior: o Homem de Ferro.",126,200805,"D"],
-["im2","Homem de Ferro 2","Filme · 2011 · 124 min · Disney+","O","Tony lida com o legado do pai, a pressão do governo pela sua tecnologia e o vingativo Ivan Vanko (Whiplash). Estreia da Viúva Negra.",124,201005,"D"],
-["hulk","O Incrível Hulk","Filme · 2011 · 112 min · Disney+","O","Bruce Banner foge do general Ross enquanto busca uma cura para o monstro que carrega — até precisar dele para deter o Abominável.",112,200806,"D"],
-["thor1","Thor","Filme · 2011 · 115 min · Disney+","O","Banido de Asgard por arrogância, Thor cai na Terra sem poderes e precisa reaprender a ser digno do Mjölnir — enquanto Loki trama no trono.",115,201105,"D"],
-["aveng1","Os Vingadores","Filme · 2012 · 143 min · Disney+ · Loki e o Tesseract","R","Loki rouba o Tesseract e abre um portal alienígena sobre Nova York. Os heróis se unem pela primeira vez — e a fuga de uma variante de Loki nesse dia origina a série que cria o multiverso.",143,201205,"D"]]},
-{g:"Fase 2",items:[
-["thor2","Thor: O Mundo Sombrio","Filme · 2013 · 112 min · Disney+","O","Thor enfrenta os Elfos Negros e o Éter (a Joia da Realidade) ao lado de Jane Foster — e de um Loki prisioneiro cheio de segundas intenções.",112,201311,"D"],
-["im3","Homem de Ferro 3","Filme · 2012–13 · 130 min · Disney+","O","Abalado após a batalha de Nova York, Tony enfrenta crises de ansiedade, o misterioso Mandarim e a vida sem depender da armadura.",130,201305,"D"],
-["cap2","Capitão América: O Soldado Invernal","Filme · 2014 · 136 min · Disney+ · Bucky e Sam","R","Steve descobre que a Hydra infiltrou a S.H.I.E.L.D. por dentro — e que o assassino Soldado Invernal é seu amigo Bucky. Estreia de Sam Wilson, o Falcão.",136,201404,"D"],
-["gotg1","Guardiões da Galáxia","Filme · 2014 · 121 min · Disney+","O","O ladrão espacial Peter Quill e um bando de foras-da-lei se unem para impedir que Ronan use a Joia do Poder para destruir um planeta.",121,201408,"D"],
-["gotg2","Guardiões da Galáxia Vol. 2","Filme · 2014 · 136 min · Disney+","O","Os Guardiões encontram Ego, o pai celestial de Quill — e descobrem que família é o que se escolhe, não o que se herda.",136,201705,"D"],
-["groot","Eu Sou Groot (T1+T2)","Curtas · 2014 · 10 ep · Disney+","O","Curtas animados com as travessuras do bebê Groot pela galáxia entre as aventuras dos Guardiões.",30,202208,"D"],
-["ultron","Vingadores: Era de Ultron","Filme · 2015 · 141 min · Disney+ · Visão e Wanda","R","Uma IA criada por Tony decide que a paz exige exterminar a humanidade. Nascem o Visão, Wanda e Pietro Maximoff — peças-chave de WandaVision e VisionQuest.",141,201505,"D"],
-["ant1","Homem-Formiga","Filme · 2015 · 117 min · Disney+ · Scott Lang","R","O ladrão Scott Lang veste o traje encolhedor de Hank Pym para impedir que a tecnologia Pym caia em mãos erradas. Origem do herói que está em Doomsday.",117,201507,"D"]]},
-{g:"Defensores · Séries Netflix (cânone)",items:[
-["dd","Demolidor (T1–T3)","Série · 2015–18 · 39 ep · Disney+ · base de Renascido","R","O advogado cego Matt Murdock combate o crime no Hell's Kitchen como Demolidor, em guerra pessoal contra Wilson Fisk, o Rei do Crime. Base direta de Demolidor: Renascido.",1950,201504,"D"],
-["jj","Jessica Jones (T1–T3)","Série · 2015–19 · Disney+","O","Detetive particular com superforça e passado traumático, Jessica enfrenta Kilgrave, um homem capaz de controlar mentes com a voz.",1950,201511,"D"],
-["lc","Luke Cage (T1–T2)","Série · 2016–18 · Disney+","O","Com pele à prova de balas, Luke Cage vira o protetor relutante do Harlem contra o crime organizado local.",1300,201609,"D"],
-["if","Punho de Ferro (T1–T2)","Série · 2017–18 · Disney+","O","Danny Rand retorna da cidade mística de K'un-Lun com o poder do Punho de Ferro para retomar a empresa da família e enfrentar o Tentáculo.",1150,201703,"D"],
-["def","Os Defensores","Minissérie · 2017 · 8 ep · Disney+","O","Demolidor, Jessica Jones, Luke Cage e Punho de Ferro se unem a contragosto para derrubar a organização Tentáculo em Nova York.",400,201708,"D"],
-["pun","O Justiceiro (T1–T2)","Série · 2017–19 · Disney+","O","Frank Castle caça implacavelmente os responsáveis pela morte de sua família — e descobre uma conspiração militar mais funda.",1430,201711,"D"]]},
-{g:"Fase 3 · Rumo ao infinito",items:[
-["civil","Capitão América: Guerra Civil","Filme · 2016 · 147 min · Disney+","R","O Acordo de Sokóvia racha os Vingadores ao meio: Tony contra Steve, com o Barão Zemo manipulando tudo nos bastidores. Estreias de Pantera Negra e Homem-Aranha no MCU.",147,201605,"D"],
-["bw","Viúva Negra","Filme · 2016 · 134 min · Disney+ · Yelena e Guardião Vermelho","R","Foragida após Guerra Civil, Natasha reencontra sua 'família' russa — Yelena, Melina e o Guardião Vermelho — para derrubar a Sala Vermelha. Origem de dois nomes do elenco de Doomsday.",134,202107,"D"],
-["bp1","Pantera Negra","Filme · 2016 · 134 min · Disney+ · Shuri e M'Baku","R","T'Challa assume o trono de Wakanda e enfrenta Killmonger, que quer usar o vibranium para uma revolução global. Estreias de Shuri e M'Baku.",134,201802,"D"],
-["sp1","Homem-Aranha: De Volta ao Lar","Filme · 2016 · 133 min · Netflix","O","Peter Parker equilibra o colégio e a vida de herói de bairro enquanto enfrenta o Abutre, sob a mentoria (e vigilância) de Tony Stark.",133,201707,"N"],
-["dstr","Doutor Estranho","Filme · 2016–17 · 115 min · Disney+","R","O cirurgião arrogante Stephen Strange perde o uso das mãos e encontra as artes místicas em Kamar-Taj — a introdução da magia e das dimensões no MCU.",115,201611,"D"],
-["ragna","Thor: Ragnarok","Filme · 2017 · 130 min · Disney+","O","Preso no planeta-lixão Sakaar, Thor precisa escapar com Hulk e Loki para impedir que sua irmã Hela consuma Asgard.",130,201711,"D"],
-["ant2","Homem-Formiga e a Vespa","Filme · 2018 · 118 min · Disney+ · Ghost","O","Scott, Hope e Hank tentam resgatar Janet do Reino Quântico enquanto são caçados pela intangível Ghost — que reaparece em Thunderbolts* e Doomsday.",118,201807,"D"],
-["iw","Vingadores: Guerra Infinita","Filme · 2018 · 149 min · Disney+","E","Thanos cruza o universo reunindo as seis Joias do Infinito. Pela primeira vez, os heróis perdem — e metade de toda a vida vira pó.",149,201804,"D"],
-["endgame","Vingadores: Ultimato","Filme · 2018/2023 · 181 min · Disney+ · origem da variante de Loki","E","Cinco anos após o estalo, os Vingadores executam o 'assalto no tempo' para desfazer Thanos. O desfecho da Saga do Infinito — e o acidente que solta a variante de Loki no multiverso.",181,201904,"D"]]},
-{g:"Fase 4 · O multiverso desperta",items:[
-["loki","Loki (T1+T2)","Série · AVT, fora do tempo · 12 ep · Disney+ · lista oficial da Disney","E","Capturado pela AVT após escapar em 2012, Loki descobre quem realmente controla o tempo. A série que cria o multiverso, a TVA e as regras de toda a Saga atual — a peça nº 1 para Doomsday.",600,202106,"D"],
-["whatif","What If...? (T1–T3)","Animação · Multiverso · Disney+","R","O Vigia narra realidades alternativas: e se momentos-chave do MCU tivessem acontecido de outro jeito? Um tour guiado pelos conceitos do multiverso.",810,202108,"D"],
-["zombies","Marvel Zombies","Animação · 2025 · 4 ep · Disney+","O","Em um universo alternativo devastado, heróis transformados em mortos-vivos caçam os poucos sobreviventes.",120,202509,"D"],
-["wanda","WandaVision","Série · 2023 · 9 ep · Disney+","R","Presa numa sitcom idílica em Westview, Wanda esconde um luto devastador. A origem da Feiticeira Escarlate — e o ponto de partida da trilogia que termina em VisionQuest.",360,202101,"D"],
-["shang","Shang-Chi e a Lenda dos Dez Anéis","Filme · 2023 · 132 min · Disney+ · lista oficial da Disney","E","Shang-Chi confronta o pai, Wenwu, líder milenar da organização dos Dez Anéis, e abraça seu destino na vila mística de Ta Lo. Shang-Chi está confirmado em Doomsday.",132,202109,"D"],
-["falcao","Falcão e o Soldado Invernal","Série · 2024 · 6 ep · Disney+ · Agente Americano e Torres","R","Sam Wilson hesita em assumir o escudo enquanto enfrenta os Apátridas e vê o governo entregar o título a John Walker — o futuro Agente Americano. Estreia de Joaquín Torres.",300,202103,"D"],
-["sp2","Homem-Aranha: Longe de Casa","Filme · 2024 · 129 min · Netflix/Prime","O","Em excursão pela Europa, Peter enfrenta as ilusões de Mysterio — e termina com sua identidade secreta exposta ao mundo.",129,201907,"N"],
-["eternos","Eternos","Filme · 2024 · 156 min · Disney+","O","Seres imortais que moldaram a civilização humana em segredo se reúnem contra os Deviantes — e descobrem o verdadeiro propósito de sua missão na Terra.",156,202111,"D"],
-["nwh","Homem-Aranha: Sem Volta para Casa","Filme · 2024 · 148 min · Netflix · multiverso","R","Um feitiço de Strange dá errado e vilões (e Aranhas) de outros universos invadem o MCU. O multiverso escancarado para o grande público — com retorno do Demolidor.",148,202112,"N"],
-["mom","Doutor Estranho no Multiverso da Loucura","Filme · 2024 · 126 min · Disney+","R","Strange e America Chavez fogem através de universos da Feiticeira Escarlate corrompida pelo Darkhold. As regras (e os perigos) das incursões multiversais.",126,202205,"D"],
-["hawk","Gavião Arqueiro","Série · Natal 2024 · 6 ep · Disney+ · Kingpin e Yelena","O","No Natal nova-iorquino, Clint Barton treina a jovem Kate Bishop enquanto seu passado como Ronin o alcança — com Yelena em caçada e Kingpin nas sombras.",270,202111,"D"],
-["moon","Cavaleiro da Lua","Série · 2025 · 6 ep · Disney+","O","Marc Spector e Steven Grant dividem o mesmo corpo a serviço do deus lunar Khonshu, contra o culto do fanático Arthur Harrow.",300,202203,"D"],
-["wakanda2","Pantera Negra: Wakanda Para Sempre","Filme · 2025 · 161 min · Disney+ · lista oficial · Namor e Namora","E","Wakanda, de luto por T'Challa, entra em rota de colisão com Namor e o reino submarino de Talokan. Shuri assume o manto — e Namor, Namora e Riri Williams estreiam aqui.",161,202211,"D"],
-["echo","Echo","Série · 2025 · 5 ep · Disney+","O","Maya Lopez retorna a Oklahoma para acertar contas com Kingpin — e se reconectar com o legado ancestral Choctaw de sua família.",225,202401,"D"],
-["shehulk","Mulher-Hulk: Defensora de Heróis","Série · 2025 · 9 ep · Disney+","O","A advogada Jennifer Walters ganha os poderes do primo Bruce e passa a defender super-humanos no tribunal — quebrando a quarta parede no caminho.",315,202208,"D"],
-["msmarvel","Ms. Marvel","Série · 2025 · 6 ep · Disney+","O","A fã de super-heróis Kamala Khan descobre poderes ligados a um bracelete de família e à dimensão Noor, em Jersey City.",270,202206,"D"],
-["thor4","Thor: Amor e Trovão","Filme · 2025 · 119 min · Disney+","O","Thor enfrenta Gorr, o Carniceiro dos Deuses, ao lado de uma Jane Foster empunhando o Mjölnir como a Poderosa Thor.",119,202207,"D"],
-["iron","Coração de Ferro","Série · 2025 · 6 ep · Disney+ · Riri Williams","O","De volta a Chicago, Riri Williams constrói sua própria armadura e cruza com Parker Robbins, o místico Capuz — tecnologia contra magia.",270,202506,"D"],
-["werewolf","Lobisomem na Noite","Especial · 2025 · 53 min · Disney+","O","Em uma noite gótica em preto e branco, caçadores de monstros disputam uma relíquia — e um deles esconde um segredo peludo.",53,202210,"D"],
-["gotgx","Guardiões: Especial de Festas","Especial · 2025 · 44 min · Disney+","O","Drax e Mantis sequestram Kevin Bacon na Terra para animar o Natal de Peter Quill. Curto, leve e natalino.",44,202211,"D"],
-["quant","Homem-Formiga e a Vespa: Quantumania","Filme · 2025 · 124 min · Disney+ · Cassie Lang","R","A família Formiga inteira é sugada ao Reino Quântico, onde enfrenta Kang, o Conquistador. Cassie Lang vira heroína — e está no elenco de Doomsday.",124,202302,"D"],
-["gotg3","Guardiões da Galáxia Vol. 3","Filme · 2025 · 150 min · Disney+","O","Com Rocket entre a vida e a morte, os Guardiões enfrentam o Alto Evolucionário em sua última missão como equipe.",150,202305,"D"]]},
-{g:"Fase 5 · A convergência",items:[
-["secreta","Invasão Secreta","Série · 2026 · 6 ep · Disney+","O","Nick Fury retorna à Terra para desmontar uma infiltração de Skrulls rebeldes nos mais altos escalões dos governos humanos.",300,202306,"D"],
-["marvels","As Marvels","Filme · 2026 · 105 min · Disney+ · pós-créditos com o Fera","O","Carol Danvers, Monica Rambeau e Kamala Khan trocam de lugar a cada uso de poderes. A cena pós-créditos apresenta o Fera de Kelsey Grammer — hoje no elenco de Doomsday.",105,202311,"D"],
-["agatha","Agatha Desde Sempre","Série · 2026 · 9 ep · Disney+ · ponte para VisionQuest","R","Sem poderes, Agatha Harkness percorre a lendária Estrada das Bruxas ao lado de um adolescente misterioso ligado a Wanda. Ponte direta para VisionQuest.",360,202409,"D"],
-["dpw","Deadpool & Wolverine","Filme · Multiverso · 128 min · Disney+ · mutantes da Fox e Gambit","R","Deadpool arrasta um Wolverine falido por uma odisseia multiversal na AVT. A porta de entrada oficial dos mutantes da Fox no MCU — com estreia do Gambit de Channing Tatum.",128,202407,"D"],
-["ddborn1","Demolidor: Renascido (T1)","Série · 2026 · 9 ep · Disney+","R","Matt Murdock tenta viver apenas como advogado enquanto Wilson Fisk se elege prefeito de Nova York — até a máscara se tornar inevitável de novo.",450,202503,"D"],
-["capbnw","Capitão América: Admirável Mundo Novo","Filme · 2027 · 118 min · Disney+ · lista oficial da Disney","E","Sam Wilson, já como Capitão América, desvenda uma conspiração em torno do presidente Ross — que se transforma no Hulk Vermelho. Sam e Torres estão em Doomsday.",118,202502,"D"],
-["tbolts","Thunderbolts* (Novos Vingadores)","Filme · 2027 · 126 min · Disney+ · lista oficial · Sentinela/Bob","E","Anti-heróis descartáveis — Yelena, Bucky, Guardião Vermelho, Ghost e Agente Americano — viram os Novos Vingadores após o surgimento do instável Sentinela. Doomsday se passa ~14 meses depois.",126,202505,"D"]]},
-{g:"Fase 6 · Reta final 2026",items:[
-["f4","Quarteto Fantástico: Primeiros Passos","Filme · Terra-828 (1964) · 115 min · Disney+ · leva direto a Doomsday","E","Na retrô-futurista Terra-828, a primeira família da Marvel enfrenta Galactus e o Surfista Prateado. A única aparição de Reed, Sue, Johnny e Ben antes do filme — e a cena final conecta direto a Doomsday.",115,202507,"D"],
-["wonderman","Wonder Man","Série · jan/2026 · 8 ep · Disney+","O","Sátira de Hollywood: o ator Simon Williams disputa o papel de um super-herói no cinema... tendo poderes de verdade.",280,202601,"D"],
-["ddborn2","Demolidor: Renascido (T2)","Série · mar–mai/2026 · 9 ep · Disney+","R","As consequências do reinado de Fisk sobre Nova York explodem — e a temporada prepara o terreno para o novo Homem-Aranha.",450,202603,"D"],
-["punlast","O Justiceiro: Uma Última Morte","Especial · mai/2026 · Disney+","O","Especial brutal de Frank Castle em uma última caçada — desdobramento direto de Demolidor: Renascido.",90,202605,"D"],
-["spbnd","Homem-Aranha: Um Novo Dia","Filme · jul/2026 · 145 min · ainda nos cinemas","R","Esquecido por todos após Sem Volta para Casa, Peter recomeça do zero nas ruas de NY — cruzando com Hulk, Demolidor e Justiceiro.",145,202607,"C"],
-["xmen97","X-Men '97 (T2)","Animação · jul/2026 · Disney+","O","Continuação direta da animação clássica dos X-Men dos anos 90, em seu próprio universo — clima perfeito para o retorno dos mutantes.",300,202607,"D"],
-["vision","VisionQuest","Série · out/2026 · 8 ep · Disney+ · conclui a trilogia da Wanda/Visão","R","O Visão Branco busca suas memórias e sua humanidade. Encerra a trilogia iniciada em WandaVision — com o retorno de Ultron na voz de James Spader.",360,202610,"D","2026-10-14"]]},
-{g:"Arquivo Fox · X-Men originais no elenco",items:[
-["x1","X-Men: O Filme (2000)","Filme · 104 min · Disney+ · Prof. X, Magneto, Ciclope, Mística","R","Os mutantes emergem: Xavier recruta Wolverine e Vampira enquanto Magneto planeja 'mutar' os líderes mundiais à força. Estreia de 4 dos 6 veteranos que retornam em Doomsday.",104,200007,"D"],
-["x2","X-Men 2 (X2)","Filme · 2003 · 134 min · Disney+ · única aparição do Noturno","R","O coronel Stryker invade a escola de Xavier, forçando X-Men e a Irmandade de Magneto a uma aliança. A ÚNICA aparição do Noturno de Alan Cumming — indispensável.",134,200305,"D"],
-["x3","X-Men: O Confronto Final","Filme · 2006 · 104 min · Disney+ · estreia do Fera","R","Uma 'cura mutante' e o retorno de Jean Grey como a Fênix racham a comunidade mutante. Estreia do Fera de Kelsey Grammer no cinema.",104,200605,"D"],
-["dofp","X-Men: Dias de um Futuro Esquecido","Filme · 2014 · 132 min · Disney+ · une as duas gerações","E","Wolverine é enviado a 1973 para impedir o futuro apocalíptico dos Sentinelas. O filme que une as duas gerações de elenco e reescreve a linha do tempo da trilogia original.",132,201405,"D"],
-["logan","Logan","Filme · 2029 (interno) · 137 min · Disney+","O","Em 2029, um Logan envelhecido e um Xavier doente protegem a jovem X-23 na jornada final do Wolverine da era Fox.",137,201703,"D"],
-["dp1","Deadpool","Filme · 2016 · 108 min · Disney+","O","O mercenário tagarela Wade Wilson, desfigurado por um experimento, caça o responsável — quebrando a quarta parede o tempo todo.",108,201602,"D"],
-["dp2","Deadpool 2","Filme · 2018 · 119 min · Disney+","O","Deadpool monta a X-Force para proteger um jovem mutante do viajante do tempo Cable.",119,201805,"D"]]}
-];
+const DATA = window.DOOMSDAY_DATA || [];
+if(!DATA.length){
+  document.getElementById('list').innerHTML =
+    '<div class="noresult">Não foi possível carregar <b>data.js</b>. '+
+    'Confira se o arquivo está na mesma pasta do <b>index.html</b>.</div>';
+}
 
 const PR={E:"Essencial",R:"Recomendado",O:"Opcional"};
 const PFN={D:"Disney+",N:"Netflix",C:"Cinemas"};
@@ -877,6 +900,207 @@ document.getElementById('importfile').addEventListener('change',e=>{
   e.target.value='';
 });
 
+// ---- resumo numérico (reaproveitado pelo link e pelo placar) ----
+function summary(){
+  let tot=0,done=0,rsum=0,rcount=0,remAll=0,remER=0;
+  ALL.forEach(it=>{
+    const[id,,,p,,min]=it;tot++;
+    if(checked[id])done++;else{remAll+=min;if(p!=='O')remER+=min;}
+    if(ratings[id]!==undefined){rsum+=ratings[id];rcount++;}
+  });
+  return{tot,done,pct:tot?Math.round(done/tot*100):0,rcount,
+         avg:rcount?rsum/rcount:null,remAll,remER,
+         days:Math.max(0,Math.ceil((PREMIERE-new Date())/864e5))};
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+// ---- progresso embutido na URL ----
+// Layout dos bytes: [versão][total:2][checksum do catálogo:2][bitmap de assistidos][notas em nibbles]
+// Nibble 0–10 = nota, 15 = sem nota. Anotações NÃO entram — ficam só no seu navegador.
+const SHARE_V=1;
+function catalogSum(){
+  let s=0;
+  ALL.forEach(it=>{for(const ch of it[0])s=(s*31+ch.charCodeAt(0))&0xFFFF;});
+  return s;
+}
+function b64url(bytes){
+  let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));
+  return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function unb64url(s){
+  s=s.replace(/-/g,'+').replace(/_/g,'/');
+  while(s.length%4)s+='=';
+  const bin=atob(s), out=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);
+  return out;
+}
+function encodeState(){
+  const n=ALL.length, sum=catalogSum();
+  const nbits=Math.ceil(n/8), nnib=Math.ceil(n/2);
+  const b=new Uint8Array(5+nbits+nnib);
+  b[0]=SHARE_V;b[1]=n>>8;b[2]=n&255;b[3]=sum>>8;b[4]=sum&255;
+  ALL.forEach((it,i)=>{
+    const id=it[0];
+    if(checked[id])b[5+(i>>3)]|=1<<(i&7);
+    const r=ratings[id];
+    const v=(typeof r==='number'&&r>=0&&r<=10)?r:15;
+    const p=5+nbits+(i>>1);
+    b[p]|=(i&1)?(v<<4):v;
+  });
+  return b64url(b);
+}
+function decodeState(code){
+  let b;
+  try{b=unb64url(code);}catch(e){return null;}
+  if(b.length<5||b[0]!==SHARE_V)return null;
+  const n=(b[1]<<8)|b[2], sum=(b[3]<<8)|b[4];
+  const nbits=Math.ceil(n/8), nnib=Math.ceil(n/2);
+  if(!n||b.length<5+nbits+nnib)return null;
+  const c={},r={};
+  let done=0,rsum=0,rcount=0;
+  for(let i=0;i<Math.min(n,ALL.length);i++){
+    const id=ALL[i][0];
+    if((b[5+(i>>3)]>>(i&7))&1){c[id]=true;done++;}
+    const p=5+nbits+(i>>1);
+    const v=(i&1)?(b[p]>>4):(b[p]&15);
+    if(v<=10){r[id]=v;rsum+=v;rcount++;}
+  }
+  return{checked:c,ratings:r,done,rcount,tot:n,
+         avg:rcount?rsum/rcount:null,
+         pct:n?Math.round(done/n*100):0,
+         drift:(n!==ALL.length||sum!==catalogSum())};
+}
+function shareURL(){
+  const code=encodeState();
+  const base=location.origin+location.pathname.replace(/index\.html$/,'');
+  // Em https o link passa por /api/share, que devolve a prévia com o seu progresso.
+  // Fora dele (localhost, file://) cai no hash direto, que funciona igual pro humano.
+  return location.protocol==='https:'
+    ? `${base}api/share?s=${code}`
+    : `${base}#s=${code}`;
+}
+document.getElementById('linkbtn').addEventListener('click',async()=>{
+  const s=summary();
+  if(!s.done&&!s.rcount){toast('Marque ao menos um título antes de gerar o link.');return;}
+  const url=shareURL();
+  try{await navigator.clipboard.writeText(url);toast('🔗 Link copiado — quem abrir vê o seu progresso.');}
+  catch(e){prompt('Copie o link do seu progresso:',url);}
+});
+
+// ---- alguém abriu um link compartilhado ----
+function readShared(){
+  const m=/[#&?]s=([A-Za-z0-9_-]+)/.exec(location.hash);
+  const box=document.getElementById('sharedbox');
+  if(!m){box.classList.add('hidden');return;}
+  const st=decodeState(m[1]);
+  box.classList.remove('hidden');
+  if(!st){
+    box.className='sharedbox bad';
+    box.innerHTML=`<div class="sh">Link inválido</div>
+      <div class="sstat">Esse link de progresso está corrompido ou é de uma versão antiga do checklist.</div>
+      <div class="sacts"><button class="ghost" id="sdismiss">Fechar</button></div>`;
+  }else{
+    box.className='sharedbox';
+    const avgTxt=st.avg===null?'sem notas ainda':`média <b>${st.avg.toFixed(1).replace('.',',')}</b> em ${st.rcount} avaliado${st.rcount>1?'s':''}`;
+    box.innerHTML=`<div class="sh">Progresso compartilhado</div>
+      <div class="sstat">Quem te mandou este link está em <b>${st.pct}%</b> — ${st.done} de ${st.tot} títulos · ${avgTxt}.</div>
+      ${st.drift?'<div class="swarn">⚠ O catálogo mudou desde que esse link foi gerado, então alguns títulos podem não bater exatamente.</div>':''}
+      <div class="swarn">Importar substitui suas marcações e notas. Suas anotações de texto são preservadas.</div>
+      <div class="sacts">
+        <button id="simport">Importar este progresso</button>
+        <button class="ghost" id="sdismiss">Só olhando, obrigado</button>
+      </div>`;
+    box.querySelector('#simport').addEventListener('click',()=>{
+      if(!confirm('Substituir suas marcações e notas pelas deste link? Suas anotações de texto continuam intactas.'))return;
+      checked=st.checked;ratings=st.ratings;
+      watching=watching.filter(id=>!checked[id]);
+      save('⬆ Progresso importado do link');render();
+      history.replaceState(null,'',location.pathname+location.search);
+      box.classList.add('hidden');
+    });
+  }
+  box.querySelector('#sdismiss').addEventListener('click',()=>{
+    history.replaceState(null,'',location.pathname+location.search);
+    box.classList.add('hidden');
+  });
+}
+
+// Colar um link de progresso com a página já aberta só troca o hash e não
+// recarrega nada — sem isto, a caixa acima nunca apareceria nesse caso.
+window.addEventListener('hashchange',readShared);
+
+// ---- placar do grupo ----
+const NICKKEY='doomsday-nick';
+const blist=document.getElementById('blist'),bnick=document.getElementById('bnick'),
+      bsend=document.getElementById('bsend'),bcount=document.getElementById('bcount');
+bnick.value=localStorage.getItem(NICKKEY)||'';
+
+function renderBoard(entries){
+  const me=(bnick.value||'').trim().toLowerCase();
+  if(!entries.length){
+    bcount.textContent='';
+    blist.innerHTML=`<div class="bempty">Ninguém publicou ainda. Seja o primeiro — coloque seu nome acima e clique em <b>Publicar progresso</b>.</div>`;
+    return;
+  }
+  entries.sort((a,b)=>b.pct-a.pct||b.done-a.done||a.name.localeCompare(b.name));
+  bcount.textContent=entries.length+(entries.length>1?' participantes':' participante');
+  blist.innerHTML=entries.map((e,i)=>{
+    const avgTxt=(typeof e.avg==='number')?` · nota ${e.avg.toFixed(1).replace('.',',')}`:'';
+    return `<div class="brow${e.name.toLowerCase()===me?' me':''}">
+      <span class="bpos">${i+1}º</span>
+      <span class="bwho">${esc(e.name)}<i>${e.done}/${e.tot}${avgTxt}</i></span>
+      <span class="bbar"><i style="width:${e.pct}%"></i></span>
+      <span class="bpct">${e.pct}%</span>
+    </div>`;
+  }).join('');
+}
+function boardOff(msg){
+  bcount.textContent='';
+  bsend.disabled=true;
+  blist.innerHTML=`<div class="bempty">${msg}</div>`;
+}
+async function loadBoard(){
+  if(location.protocol==='file:'){
+    boardOff('O placar precisa do site rodando num servidor. Abra por <b>http://localhost</b> ou pelo endereço publicado.');
+    return;
+  }
+  try{
+    const r=await fetch('/api/board',{cache:'no-store'});
+    // 404 = servidor estático simples (sem funções); 501 = deploy sem banco configurado.
+    if(r.status===501||r.status===404){
+      boardOff('O placar ainda não foi ligado. Crie um banco KV no painel da Vercel e conecte ao projeto — o resto já está pronto.');
+      return;
+    }
+    if(!r.ok)throw 0;
+    const j=await r.json();
+    renderBoard(Array.isArray(j.entries)?j.entries:[]);
+  }catch(e){
+    boardOff('Não deu para carregar o placar agora. Recarregue a página em alguns instantes.');
+  }
+}
+bsend.addEventListener('click',async()=>{
+  const name=bnick.value.trim();
+  if(name.length<2){toast('Escreva um nome com pelo menos 2 letras.');bnick.focus();return;}
+  const s=summary();
+  bsend.disabled=true;bsend.textContent='Publicando...';
+  try{
+    localStorage.setItem(NICKKEY,name);
+    const r=await fetch('/api/board',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name,done:s.done,tot:s.tot,pct:s.pct,avg:s.avg})
+    });
+    if(!r.ok)throw 0;
+    const j=await r.json();
+    renderBoard(Array.isArray(j.entries)?j.entries:[]);
+    toast('🏁 Publicado no placar do grupo');
+  }catch(e){
+    toast('Não deu para publicar agora. Tente de novo em instantes.');
+  }finally{
+    bsend.disabled=false;bsend.textContent='Publicar progresso';
+  }
+});
+
 // ---- busca ----
 const sinput=document.getElementById('search'), sbox=document.getElementById('sbox');
 let debT;
@@ -928,6 +1152,20 @@ function tick(){
 }
 tick();setInterval(tick,30000);
 load();
+readShared();
+loadBoard();
+
+// ---- PWA ----
+// Só registra em origem segura (https ou localhost). Em file:// é ignorado.
+if('serviceWorker' in navigator && location.protocol!=='file:'){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  });
+}
 </script>
+
+<!-- Vercel Analytics: contagem de visitas, sem cookies e sem dados pessoais. -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

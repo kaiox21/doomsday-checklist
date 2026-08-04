@@ -1,0 +1,103 @@
+// Placar do grupo.
+//
+// GET  /api/board  → { entries: [...] }
+// POST /api/board  → publica/atualiza sua linha e devolve o placar já atualizado
+//
+// Guarda tudo num único hash do Redis. Sem login: a chave é o nome normalizado,
+// então republicar sobrescreve a própria linha. Isso é proposital — o placar é
+// para um grupo pequeno de gente conhecida, não para a internet aberta.
+//
+// Sem banco configurado, responde 501 e o front mostra o aviso no lugar da lista.
+
+export const config = { runtime: 'edge' };
+
+const HASH = 'doomsday:board';
+const MAX_ENTRIES = 200;
+
+const REDIS_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+const REDIS_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+
+const json = (body, status = 200) => new Response(JSON.stringify(body), {
+  status,
+  headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }
+});
+
+async function redis(command) {
+  const r = await fetch(REDIS_URL, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${REDIS_TOKEN}`, 'content-type': 'application/json' },
+    body: JSON.stringify(command)
+  });
+  if (!r.ok) throw new Error(`redis ${r.status}`);
+  const j = await r.json();
+  if (j.error) throw new Error(j.error);
+  return j.result;
+}
+
+// HGETALL devolve um array plano [campo, valor, campo, valor, ...].
+async function readBoard() {
+  const flat = await redis(['HGETALL', HASH]);
+  if (!Array.isArray(flat)) return [];
+  const out = [];
+  for (let i = 0; i + 1 < flat.length; i += 2) {
+    try {
+      const e = JSON.parse(flat[i + 1]);
+      if (e && typeof e.name === 'string') out.push(e);
+    } catch { /* linha corrompida: ignora em vez de derrubar o placar */ }
+  }
+  return out.sort((a, b) => b.pct - a.pct || b.done - a.done || a.name.localeCompare(b.name));
+}
+
+const clampInt = (v, lo, hi) =>
+  Number.isFinite(v) ? Math.min(hi, Math.max(lo, Math.round(v))) : null;
+
+export default async function handler(req) {
+  if (!REDIS_URL || !REDIS_TOKEN) {
+    return json({ error: 'unconfigured' }, 501);
+  }
+
+  try {
+    if (req.method === 'GET') {
+      return json({ entries: await readBoard() });
+    }
+
+    if (req.method === 'POST') {
+      let body;
+      try { body = await req.json(); } catch { return json({ error: 'bad_json' }, 400); }
+
+      // Nome: sem quebras de linha nem caracteres de controle, 2 a 24 caracteres.
+      const name = String(body?.name ?? '')
+        .replace(/[\u0000-\u001F\u007F]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, 24);
+      if (name.length < 2) return json({ error: 'bad_name' }, 400);
+
+      const tot = clampInt(Number(body?.tot), 1, 2000);
+      const done = clampInt(Number(body?.done), 0, tot ?? 2000);
+      if (tot === null || done === null) return json({ error: 'bad_progress' }, 400);
+
+      // pct vem recalculado aqui — não dá para confiar no que o cliente mandou.
+      const pct = Math.round((done / tot) * 100);
+
+      const rawAvg = Number(body?.avg);
+      const avg = Number.isFinite(rawAvg)
+        ? Math.min(10, Math.max(0, Math.round(rawAvg * 10) / 10))
+        : null;
+
+      const key = name.toLowerCase();
+      const exists = await redis(['HEXISTS', HASH, key]);
+      if (!exists) {
+        const count = await redis(['HLEN', HASH]);
+        if (Number(count) >= MAX_ENTRIES) return json({ error: 'board_full' }, 409);
+      }
+
+      await redis(['HSET', HASH, key, JSON.stringify({ name, done, tot, pct, avg, at: Date.now() })]);
+      return json({ ok: true, entries: await readBoard() });
+    }
+
+    return json({ error: 'method_not_allowed' }, 405);
+  } catch (e) {
+    return json({ error: 'upstream' }, 502);
+  }
+}
