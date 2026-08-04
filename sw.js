@@ -3,7 +3,9 @@
 // hora), cache-first para assets imutáveis (ícones e fontes). O progresso do
 // usuário continua no localStorage — nada aqui toca nele.
 
-const CACHE = 'doomsday-v1';
+// Bump a versão sempre que a lista de assets abaixo mudar — o activate apaga
+// os caches antigos, senão sobrariam arquivos que o site não usa mais.
+const CACHE = 'doomsday-v2';
 
 // Casco mínimo para o site abrir offline.
 const SHELL = [
@@ -11,7 +13,7 @@ const SHELL = [
   '/index.html',
   '/data.js',
   '/manifest.json',
-  '/favicon.svg',
+  '/favicon-32.png',
   '/icon-192.png',
   '/icon-512.png',
   '/apple-touch-icon.png'

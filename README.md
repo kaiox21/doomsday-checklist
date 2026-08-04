@@ -28,6 +28,8 @@ index.html      página inteira: layout, estilos e lógica
 data.js         catálogo dos 75 títulos — mexa aqui pra mudar a lista
 sw.js           service worker (offline)
 manifest.json   metadados de PWA
+icon-*.png      ícones gerados — não edite à mão, veja abaixo
+assets/         arte de origem dos ícones
 lib/            código compartilhado entre as funções serverless
 api/og.js       imagem de preview gerada na hora
 api/share.js    página de compartilhamento com as meta tags certas
@@ -52,9 +54,10 @@ npm run dev     # python3 -m http.server 8000
 ### Utilitários
 
 ```bash
-npm install                 # só é preciso para os dois comandos abaixo
-npm run og                  # renderiza os cards do /api/og em scripts/out/
-node scripts/test-share.js  # testa o ida-e-volta do link de progresso
+npm install                    # só é preciso para os dois comandos abaixo
+npm run og                     # renderiza os cards do /api/og em scripts/out/
+node scripts/test-share.js     # testa o ida-e-volta do link de progresso
+python3 scripts/make-icons.py  # regera os ícones (requer: pip3 install --user pillow)
 ```
 
 O `test-share.js` extrai as funções reais do `index.html` e confere que o que o navegador codifica é exatamente o que as funções serverless decodificam. Vale rodar depois de qualquer mexida no `data.js` ou na codificação.
@@ -86,6 +89,12 @@ Como o `index.html` é estático, as meta tags dele não podem variar por pessoa
 - Persistência em `localStorage`, na chave `doomsday-checklist`.
 - Layout responsivo, com `prefers-reduced-motion` respeitado.
 - O `api/og.js` monta os elementos como objetos simples em vez de JSX, o que evita precisar de transpilação num projeto sem build.
+
+## Ícones
+
+Todos os PNGs de ícone saem de `assets/doom-source.jpg` via `scripts/make-icons.py` — editar um deles à mão seria desfeito na próxima execução. Para mudar o enquadramento, ajuste `CROP_X`, `CROP_Y` e `CROP_SIZE` no script e rode de novo.
+
+Se trocar a arte de origem, confira o resultado a 32px antes de fechar: é o tamanho da aba do navegador, e é onde a maioria das imagens detalhadas deixa de funcionar.
 
 ## Aviso
 

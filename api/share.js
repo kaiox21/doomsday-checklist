@@ -62,7 +62,7 @@ export default async function handler(req) {
 <meta name="twitter:title" content="${escAttr(title)}">
 <meta name="twitter:description" content="${escAttr(desc)}">
 <meta name="twitter:image" content="${escAttr(ogImage)}">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <meta http-equiv="refresh" content="0; url=${escAttr(target)}">
 <style>
   body{background:#060907;color:#76867C;font-family:system-ui,sans-serif;
