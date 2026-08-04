@@ -1076,7 +1076,11 @@ async function loadBoard(){
     const j=await r.json();
     renderBoard(Array.isArray(j.entries)?j.entries:[]);
   }catch(e){
-    boardOff('Não deu para carregar o placar agora. Recarregue a página em alguns instantes.');
+    // Offline o site inteiro continua funcionando pelo service worker — só o
+    // placar não, e vale dizer isso em vez de sugerir recarregar à toa.
+    boardOff(navigator.onLine
+      ? 'Não deu para carregar o placar agora. Recarregue a página em alguns instantes.'
+      : 'Você está <b>offline</b>. O checklist funciona normalmente; o placar volta assim que a conexão voltar.');
   }
 }
 bsend.addEventListener('click',async()=>{

@@ -48,9 +48,6 @@ async function readBoard() {
   return out.sort((a, b) => b.pct - a.pct || b.done - a.done || a.name.localeCompare(b.name));
 }
 
-const clampInt = (v, lo, hi) =>
-  Number.isFinite(v) ? Math.min(hi, Math.max(lo, Math.round(v))) : null;
-
 export default async function handler(req) {
   if (!REDIS_URL || !REDIS_TOKEN) {
     return json({ error: 'unconfigured' }, 501);
@@ -73,9 +70,21 @@ export default async function handler(req) {
         .slice(0, 24);
       if (name.length < 2) return json({ error: 'bad_name' }, 400);
 
-      const tot = clampInt(Number(body?.tot), 1, 2000);
-      const done = clampInt(Number(body?.done), 0, tot ?? 2000);
-      if (tot === null || done === null) return json({ error: 'bad_progress' }, 400);
+      // Total: recusado, não corrigido. Limitar um tot inválido para dentro da
+      // faixa gravaria uma linha inventada — tot=0 virava tot=1 em silêncio.
+      const totRaw = Number(body?.tot);
+      if (!Number.isFinite(totRaw) || totRaw < 1 || totRaw > 2000) {
+        return json({ error: 'bad_progress' }, 400);
+      }
+      const tot = Math.round(totRaw);
+
+      // Assistidos: aqui limitar faz sentido, porque a lista pode ter encolhido
+      // entre o último save do navegador e este envio.
+      const doneRaw = Number(body?.done);
+      if (!Number.isFinite(doneRaw) || doneRaw < 0) {
+        return json({ error: 'bad_progress' }, 400);
+      }
+      const done = Math.min(tot, Math.round(doneRaw));
 
       // pct vem recalculado aqui — não dá para confiar no que o cliente mandou.
       const pct = Math.round((done / tot) * 100);

@@ -57,10 +57,13 @@ npm run dev     # python3 -m http.server 8000
 npm install                    # só é preciso para os dois comandos abaixo
 npm run og                     # renderiza os cards do /api/og em scripts/out/
 node scripts/test-share.js     # testa o ida-e-volta do link de progresso
+node scripts/test-board.js     # testa o placar contra um Redis falso
 python3 scripts/make-icons.py  # regera os ícones (requer: pip3 install --user pillow)
 ```
 
 O `test-share.js` extrai as funções reais do `index.html` e confere que o que o navegador codifica é exatamente o que as funções serverless decodificam. Vale rodar depois de qualquer mexida no `data.js` ou na codificação.
+
+O `test-board.js` sobe um Redis falso em memória e exercita o `api/board.js` — inclusive o que acontece quando o cliente mente na porcentagem, quando o placar enche e quando o banco cai. Sem ele, esse handler só rodaria pela primeira vez em produção.
 
 ## Deploy
 
