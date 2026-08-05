@@ -59,7 +59,7 @@ const semAcento = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
 // "Demolidor (T1–T3)" -> "Demolidor" · "Agente Carter (One-Shot)" -> "Agente Carter"
 const limpaTitulo = t => t
-  .replace(/\s*\((?:T\d+[^)]*|One-Shot|Especial[^)]*)\)/gi, '')
+  .replace(/\s*\((?:T\d+[^)]*|One-Shot|Especial[^)]*|\d{4})\)/gi, '')
   .replace(/\s+/g, ' ')
   .trim();
 
@@ -91,12 +91,21 @@ function similaridade(a, b) {
 
 // "Filme · 1943–45 · 124 min" -> movie · "Série · 2015–18" -> tv
 function tiposProvaveis(detalhes) {
+  // Contagem de episódios é o sinal mais confiável do campo de detalhes: se o
+  // título tem "10 ep", é série, não importa como a primeira palavra o chame.
+  // "Eu Sou Groot" está registrado como "Curtas · 10 ep" e é uma série.
+  if (/\b\d+\s*ep\b/i.test(detalhes)) return ['tv'];
+
   const d = chave(detalhes).split(' ')[0];
   if (['serie', 'minisserie', 'series'].includes(d)) return ['tv'];
   if (['filme'].includes(d)) return ['movie'];
-  // Animação, Especial, Curta, Curtas: o TMDB classifica de formas diferentes,
-  // então procura nos dois e deixa a pontuação decidir.
-  return ['movie', 'tv'];
+  // Curta no singular é One-Shot da Marvel, que o TMDB guarda como filme.
+  // Sem restringir, a série homônima e muito mais popular roubava o
+  // pareamento: "Agente Carter (One-Shot)" caía na série de 2015.
+  if (d === 'curta') return ['movie'];
+  // Animação e Especial: o TMDB classifica de formas diferentes, então procura
+  // nos dois e deixa a pontuação decidir.
+  return ['tv', 'movie'];
 }
 
 // ---- TMDB ------------------------------------------------------------------
@@ -129,14 +138,23 @@ async function melhorCandidato(titulo, ano, tipos) {
       const anoC = data ? +data.slice(0, 4) : null;
 
       const sim = Math.max(similaridade(busca, nome), similaridade(busca, orig));
+
       // Ano perto conta ponto; longe desconta. Coletâneas de série têm ano de
       // estreia bem antes da chave usada aqui, então a janela é generosa.
       const dAno = anoC && ano ? Math.abs(anoC - ano) : null;
-      const bonus = dAno === null ? 0 : dAno <= 1 ? 0.18 : dAno <= 3 ? 0.09 : dAno <= 8 ? 0 : -0.14;
-      const score = Math.min(1, Math.max(0, sim + bonus));
+      const bAno = dAno === null ? 0 : dAno <= 1 ? 0.18 : dAno <= 3 ? 0.09 : dAno <= 8 ? 0 : -0.14;
+
+      // Popularidade decide os homônimos. Sem isto, um filme japonês de 1962
+      // cujo título pt-BR é "Os Vingadores" empatava com o dos Vingadores, e
+      // "Demolidores" (2012) ganhava do Demolidor da Marvel — nome idêntico,
+      // nenhum sinal de que um é assistido por milhões e o outro por ninguém.
+      const votos = c.vote_count || 0;
+      const pop = Math.min(1, Math.log10(1 + votos) / 4);
+
+      const score = Math.min(1, Math.max(0, sim * 0.72 + bAno + pop * 0.22));
 
       if (!melhor || score > melhor.score) {
-        melhor = { score, tipo, id: c.id, nome, ano: anoC, poster: c.poster_path };
+        melhor = { score, tipo, id: c.id, nome, orig, ano: anoC, poster: c.poster_path };
       }
     }
   }
@@ -169,6 +187,7 @@ for (const it of ALL) {
     const det = await tmdb(`/${ov.tipo}/${ov.id}`);
     m = { score: 1, tipo: ov.tipo, id: ov.id, nome: det.title || det.name,
           ano: +(det.release_date || det.first_air_date || '').slice(0, 4) || null,
+          orig: det.original_title || det.original_name,
           poster: det.poster_path, fixado: true };
   } else {
     m = await melhorCandidato(titulo, ano, tiposProvaveis(detalhes));
@@ -184,9 +203,13 @@ for (const it of ALL) {
   const marca = m.fixado ? 'fixo' : m.score.toFixed(2);
   const flag = m.fixado || m.score >= CONF_MIN ? '✓' : '?';
   if (!m.fixado && m.score < CONF_MIN) duvidosos.push({ id, titulo, achou: m.nome, ano: m.ano, score: m.score });
-  console.log(`  ${flag} ${id.padEnd(10)} ${String(marca).padEnd(5)} ${titulo}  →  ${m.nome} (${m.ano ?? '?'}) [${m.tipo}]`);
+  const alias = m.orig && chave(m.orig) !== chave(m.nome) ? ` «${m.orig}»` : '';
+  console.log(`  ${flag} ${id.padEnd(10)} ${String(marca).padEnd(5)} ${titulo}  →  ${m.nome}${alias} (${m.ano ?? '?'}) [${m.tipo}]`);
 
-  resultados.push({ id, ...m });
+  // ATENÇÃO: `m` tem um `id` próprio (o do TMDB). Espalhar por cima de
+  // `id` sobrescrevia o id do catálogo, e os arquivos saíam nomeados com o
+  // id do TMDB — POSTERS['cap1'] nunca acharia nada.
+  resultados.push({ catalogo: id, ...m });
 }
 
 console.log(`\n${resultados.length}/${ALL.length} pareados.`);
@@ -213,12 +236,12 @@ let bytes = 0;
 for (const r of resultados) {
   const url = `https://image.tmdb.org/t/p/w342${r.poster}`;
   const resp = await fetch(url);
-  if (!resp.ok) { console.log(`  ✗ download falhou: ${r.id}`); continue; }
+  if (!resp.ok) { console.log(`  ✗ download falhou: ${r.catalogo}`); continue; }
   fs.writeFileSync(tmp, Buffer.from(await resp.arrayBuffer()));
-  const arquivo = `${r.id}.jpg`;
+  const arquivo = `${r.catalogo}.jpg`;
   reencodar(tmp, path.join(POSTER_DIR, arquivo));
   bytes += fs.statSync(path.join(POSTER_DIR, arquivo)).size;
-  mapa[r.id] = arquivo;
+  mapa[r.catalogo] = arquivo;
 }
 fs.existsSync(tmp) && fs.unlinkSync(tmp);
 
