@@ -56,10 +56,13 @@ npm run dev     # python3 -m http.server 8000
 ```bash
 npm install                    # só é preciso para os dois comandos abaixo
 npm run og                     # renderiza os cards do /api/og em scripts/out/
+node scripts/test-data.js      # valida o catálogo e as conquistas
 node scripts/test-share.js     # testa o ida-e-volta do link de progresso
 node scripts/test-board.js     # testa o placar contra um Redis falso
 python3 scripts/make-icons.py  # regera os ícones (requer: pip3 install --user pillow)
 ```
+
+**Rode o `test-data.js` depois de qualquer edição no `data.js`.** As conquistas do `index.html` citam ids literais (`"iw"`, `"endgame"`, `"loki"`...): renomear ou remover um título não quebra nada visivelmente — a conquista simplesmente nunca mais é desbloqueada. O validador também confere ids únicos, campos obrigatórios, meses válidos e se a conquista "Decreto Cumprido" cobre exatamente os títulos essenciais.
 
 O `test-share.js` extrai as funções reais do `index.html` e confere que o que o navegador codifica é exatamente o que as funções serverless decodificam. Vale rodar depois de qualquer mexida no `data.js` ou na codificação.
 

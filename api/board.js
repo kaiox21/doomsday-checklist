@@ -1,7 +1,8 @@
 // Placar do grupo.
 //
-// GET  /api/board  → { entries: [...] }
-// POST /api/board  → publica/atualiza sua linha e devolve o placar já atualizado
+// GET    /api/board  → { entries: [...] }
+// POST   /api/board  → publica/atualiza sua linha e devolve o placar atualizado
+// DELETE /api/board  → remove uma linha pelo nome
 //
 // Guarda tudo num único hash do Redis. Sem login: a chave é o nome normalizado,
 // então republicar sobrescreve a própria linha. Isso é proposital — o placar é
@@ -48,6 +49,17 @@ async function readBoard() {
   return out.sort((a, b) => b.pct - a.pct || b.done - a.done || a.name.localeCompare(b.name));
 }
 
+// Nome: sem quebras de linha nem caracteres de controle, no máximo 24
+// caracteres. A chave no Redis é este nome em minúsculas — é o que faz
+// republicar sobrescrever a própria linha em vez de criar outra.
+function cleanName(raw) {
+  return String(raw ?? '')
+    .replace(/[\u0000-\u001F\u007F]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 24);
+}
+
 export default async function handler(req) {
   if (!REDIS_URL || !REDIS_TOKEN) {
     return json({ error: 'unconfigured' }, 501);
@@ -62,12 +74,7 @@ export default async function handler(req) {
       let body;
       try { body = await req.json(); } catch { return json({ error: 'bad_json' }, 400); }
 
-      // Nome: sem quebras de linha nem caracteres de controle, 2 a 24 caracteres.
-      const name = String(body?.name ?? '')
-        .replace(/[\u0000-\u001F\u007F]/g, '')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .slice(0, 24);
+      const name = cleanName(body?.name);
       if (name.length < 2) return json({ error: 'bad_name' }, 400);
 
       // Total: recusado, não corrigido. Limitar um tot inválido para dentro da
@@ -103,6 +110,20 @@ export default async function handler(req) {
 
       await redis(['HSET', HASH, key, JSON.stringify({ name, done, tot, pct, avg, at: Date.now() })]);
       return json({ ok: true, entries: await readBoard() });
+    }
+
+    if (req.method === 'DELETE') {
+      let body;
+      try { body = await req.json(); } catch { return json({ error: 'bad_json' }, 400); }
+
+      const name = cleanName(body?.name);
+      if (name.length < 2) return json({ error: 'bad_name' }, 400);
+
+      // Sem dono: qualquer um pode remover qualquer linha. É a mesma premissa
+      // de publicar sem login — um grupo pequeno de gente conhecida. Fechar
+      // isso exigiria contas, que é justamente o que o projeto não quer ter.
+      const removidos = await redis(['HDEL', HASH, name.toLowerCase()]);
+      return json({ ok: true, removed: Number(removidos) > 0, entries: await readBoard() });
     }
 
     return json({ error: 'method_not_allowed' }, 405);

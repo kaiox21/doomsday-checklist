@@ -418,6 +418,8 @@ mark{background:rgba(60,224,126,.25);color:#EAF2ED;border-radius:2px;padding:0 1
 }
 .bname button:hover:not(:disabled){background:var(--green-glow)}
 .bname button:disabled{opacity:.4;cursor:default}
+.bname button.ghost{border-color:var(--line);color:var(--faint)}
+.bname button.ghost:hover:not(:disabled){border-color:var(--danger);color:var(--danger);background:none}
 .brow{
   display:flex;align-items:center;gap:12px;padding:11px 14px;
   border:1px solid var(--line);border-radius:3px;background:var(--panel);margin-bottom:6px;
@@ -532,6 +534,7 @@ mark{background:rgba(60,224,126,.25);color:#EAF2ED;border-radius:2px;padding:0 1
     <div class="bname">
       <input type="text" id="bnick" maxlength="24" placeholder="Seu nome no placar (ex.: Kaio)" autocomplete="nickname">
       <button id="bsend">Publicar progresso</button>
+      <button id="bdel" class="ghost hidden" title="Tirar este nome do placar">Remover</button>
     </div>
     <div id="blist"></div>
   </section>
@@ -1033,10 +1036,22 @@ window.addEventListener('hashchange',readShared);
 // ---- placar do grupo ----
 const NICKKEY='doomsday-nick';
 const blist=document.getElementById('blist'),bnick=document.getElementById('bnick'),
-      bsend=document.getElementById('bsend'),bcount=document.getElementById('bcount');
+      bsend=document.getElementById('bsend'),bcount=document.getElementById('bcount'),
+      bdel=document.getElementById('bdel');
 bnick.value=localStorage.getItem(NICKKEY)||'';
 
+// O botão de remover só aparece quando o nome digitado está mesmo no placar —
+// senão vira um botão que não faz nada na maior parte do tempo.
+let boardEntries=[];
+function syncDelBtn(){
+  const n=(bnick.value||'').trim().toLowerCase();
+  bdel.classList.toggle('hidden', !n || !boardEntries.some(e=>e.name.toLowerCase()===n));
+}
+bnick.addEventListener('input',syncDelBtn);
+
 function renderBoard(entries){
+  boardEntries=entries;
+  syncDelBtn();
   const me=(bnick.value||'').trim().toLowerCase();
   if(!entries.length){
     bcount.textContent='';
@@ -1058,8 +1073,31 @@ function renderBoard(entries){
 function boardOff(msg){
   bcount.textContent='';
   bsend.disabled=true;
+  bdel.classList.add('hidden');
+  boardEntries=[];
   blist.innerHTML=`<div class="bempty">${msg}</div>`;
 }
+bdel.addEventListener('click',async()=>{
+  const name=bnick.value.trim();
+  if(!name)return;
+  if(!confirm(`Tirar "${name}" do placar do grupo? Seu progresso neste navegador continua intacto.`))return;
+  bdel.disabled=true;
+  try{
+    const r=await fetch('/api/board',{
+      method:'DELETE',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name})
+    });
+    if(!r.ok)throw 0;
+    const j=await r.json();
+    renderBoard(Array.isArray(j.entries)?j.entries:[]);
+    toast(j.removed?'Removido do placar':'Esse nome não estava no placar');
+  }catch(e){
+    toast('Não deu para remover agora. Tente de novo em instantes.');
+  }finally{
+    bdel.disabled=false;
+  }
+});
 async function loadBoard(){
   if(location.protocol==='file:'){
     boardOff('O placar precisa do site rodando num servidor. Abra por <b>http://localhost</b> ou pelo endereço publicado.');
