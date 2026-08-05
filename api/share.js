@@ -65,9 +65,9 @@ export default async function handler(req) {
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <meta http-equiv="refresh" content="0; url=${escAttr(target)}">
 <style>
-  body{background:#060907;color:#76867C;font-family:system-ui,sans-serif;
+  body{background:#14110F;color:#B5A899;font-family:system-ui,sans-serif;
        display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center}
-  a{color:#3CE07E}
+  a{color:#8CBF6B}
 </style>
 </head>
 <body>

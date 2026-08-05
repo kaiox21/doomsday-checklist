@@ -2,3 +2,5 @@
 .vercel
 node_modules/
 scripts/out/
+.env.local
+posters/.tmp.jpg

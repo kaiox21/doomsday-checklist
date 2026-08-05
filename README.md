@@ -7,7 +7,7 @@ No ar em **[guia.doomsday.sbs](https://guia.doomsday.sbs)**.
 ## O que tem dentro
 
 - **75 títulos** organizados em 9 blocos: Origens, Fases 1 a 6, o arco das séries Netflix (Defensores) e o Arquivo Fox dos X-Men.
-- **Prioridade por cor** — 🟢 verde = essencial · 🟡 dourado = recomendado · cinza = opcional. Dá pra fazer só o núcleo se o tempo apertar.
+- **Prioridade por cor** — ponto verde = essencial · âmbar = recomendado · cinza = opcional. Dá pra fazer só o núcleo se o tempo apertar.
 - **Contagem regressiva** para a estreia, em dias/horas/minutos.
 - **Barra de progresso** com contagem separada por prioridade e nota média.
 - **Ritmo da maratona** — quantas horas faltam e quantos minutos por dia você precisa assistir até 17/12, tanto pra ver tudo quanto só o essencial + recomendado.
@@ -29,6 +29,8 @@ data.js         catálogo dos 75 títulos — mexa aqui pra mudar a lista
 sw.js           service worker (offline)
 manifest.json   metadados de PWA
 icon-*.png      ícones gerados — não edite à mão, veja abaixo
+posters.js      mapa id -> capa, gerado pelo fetch-posters.js
+posters/        capas baixadas do TMDB (opcionais)
 assets/         arte de origem dos ícones
 lib/            código compartilhado entre as funções serverless
 api/og.js       imagem de preview gerada na hora
@@ -57,6 +59,7 @@ npm run dev     # python3 -m http.server 8000
 npm install                    # só é preciso para os dois comandos abaixo
 npm run og                     # renderiza os cards do /api/og em scripts/out/
 node scripts/test-data.js      # valida o catálogo e as conquistas
+node scripts/fetch-posters.js --dry-run   # confere o pareamento com o TMDB
 node scripts/test-share.js     # testa o ida-e-volta do link de progresso
 node scripts/test-board.js     # testa o placar contra um Redis falso
 python3 scripts/make-icons.py  # regera os ícones (requer: pip3 install --user pillow)
@@ -91,10 +94,29 @@ Como o `index.html` é estático, as meta tags dele não podem variar por pessoa
 ## Detalhes técnicos
 
 - HTML + CSS + JavaScript puro. Sem framework, sem etapa de build, sem bundler.
-- Única dependência do site: as fontes Anton e Archivo via Google Fonts. O `@vercel/og` só é usado pelas funções serverless.
+- Única dependência do site: as fontes Fraunces e Karla via Google Fonts. O `@vercel/og` só é usado pelas funções serverless.
+- Visual em escuro quente (`#14110F`), serifada nos títulos e sans humanista no resto. Sem neon, brilho, scanline ou caixa alta decorativa — a paleta inteira sai dos tokens no `:root`.
 - Persistência em `localStorage`, na chave `doomsday-checklist`.
 - Layout responsivo, com `prefers-reduced-motion` respeitado.
 - O `api/og.js` monta os elementos como objetos simples em vez de JSX, o que evita precisar de transpilação num projeto sem build.
+
+## Pôsteres
+
+As capas vêm do TMDB. Pegue uma chave em [themoviedb.org/settings/api](https://www.themoviedb.org/settings/api) (grátis para uso não comercial) e guarde fora do git:
+
+```bash
+echo 'TMDB_API_KEY=sua_chave' > .env.local
+node scripts/fetch-posters.js --dry-run   # confere os pareamentos primeiro
+node scripts/fetch-posters.js             # baixa e escreve posters.js
+```
+
+O script busca em filmes **e** em séries, pontua os candidatos por semelhança de nome e proximidade de ano, e lista tudo abaixo de 0.75 de confiança em vez de gravar em silêncio. Para os que errarem, fixe o id em `scripts/tmdb-overrides.json`:
+
+```json
+{ "loki": { "tipo": "tv", "id": 84958 } }
+```
+
+As imagens são reduzidas para 200×300 antes de entrar no repositório. Sem rodar o script o site funciona igual — as linhas usam a inicial do título no lugar da capa. O crédito ao TMDB no rodapé só aparece quando existem pôsteres, como os termos deles exigem.
 
 ## Ícones
 
